@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --brand-color: #8b5cf6;
+}
+
+body {
+  @apply bg-slate-50 overflow-x-hidden;
+}
+
+.card {
+  @apply bg-white rounded-2xl shadow-soft border border-gray-100;
+}
+
+.btn-primary {
+  @apply px-6 py-3 bg-brand-600 text-white rounded-xl font-semibold 
+         hover:bg-brand-700 active:scale-95 transition-all duration-200
+         shadow-lg shadow-brand-500/20 flex items-center justify-center gap-2;
+}
+
+.btn-secondary {
+  @apply px-6 py-3 bg-white text-brand-600 border border-brand-200 rounded-xl font-semibold 
+         hover:bg-brand-50 active:scale-95 transition-all duration-200;
+}
+
+.glass-morphism {
+  @apply bg-white/70 backdrop-blur-md border border-white/20;
+}
+
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
