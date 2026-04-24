@@ -56,6 +56,15 @@ export const useQuizStore = defineStore('quiz', {
       }
     },
 
+    previousQuestion() {
+      // 只有在不是第一题的时候才能返回
+      if (this.currentQuestionIndex > 0) {
+        this.currentQuestionIndex--;
+        // 移除当前问题的答案
+        this.responses.pop();
+      }
+    },
+
     finishQuiz() {
       const scores = calculateScores(this.responses, this.characterVectors);
       this.results = getTopResults(scores, this.characters);

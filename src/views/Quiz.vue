@@ -3,7 +3,22 @@
     <!-- 顶部导航 -->
     <div class="max-w-4xl w-full mx-auto flex items-center justify-between mb-8">
       <div class="flex items-center gap-4">
-        <button @click="confirmQuit" class="p-2 hover:bg-white rounded-full transition-colors text-gray-400 hover:text-red-500">
+        <button 
+          @click="goToPreviousQuestion" 
+          :disabled="quizStore.currentQuestionIndex === 0"
+          :class="[
+            'p-2 rounded-full transition-colors',
+            quizStore.currentQuestionIndex === 0 
+              ? 'text-gray-200 cursor-not-allowed' 
+              : 'text-gray-400 hover:bg-white hover:text-blue-500'
+          ]"
+          title="返回上一题"
+        >
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+        </button>
+        <button @click="confirmQuit" class="p-2 hover:bg-white rounded-full transition-colors text-gray-400 hover:text-red-500" title="退出测试">
           <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
@@ -75,6 +90,10 @@ const handleAnswer = (option) => {
   if (quizStore.isFinished) {
     router.push('/result')
   }
+}
+
+const goToPreviousQuestion = () => {
+  quizStore.previousQuestion()
 }
 
 const confirmQuit = () => {
