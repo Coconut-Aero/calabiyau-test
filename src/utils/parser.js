@@ -135,81 +135,81 @@ export const getCharacterVectors = (characters) => {
 
     // 根据角色特性调整向量
     switch(char.name) {
-      // 欧泊 (Opal)
-      case '米雪儿·李':
-        vec.Rationality = -0.4; vec.Boldness = 0.9; vec.Social = 0.8; vec.Idealism = 0.9; vec.Discipline = -0.7; vec.Empathy = 0.6;
-        break;
-      case '信':
-        vec.Rationality = 0.9; vec.Boldness = 0.2; vec.Social = -0.6; vec.Idealism = 0.7; vec.Discipline = 0.9; vec.Empathy = -0.3;
-        break;
-      case '心夏':
-        vec.Rationality = 0.3; vec.Boldness = 0.4; vec.Social = 0.9; vec.Idealism = 0.2; vec.Discipline = -0.4; vec.Empathy = 0.8;
-        break;
-      case '伊薇特':
-        vec.Rationality = 0.7; vec.Boldness = -0.8; vec.Social = -1.0; vec.Idealism = 0.1; vec.Discipline = 0.5; vec.Empathy = 0.4;
-        break;
-      case '千代':
-        vec.Rationality = 0.4; vec.Boldness = -0.2; vec.Social = 0.5; vec.Idealism = 0.3; vec.Discipline = 0.8; vec.Empathy = 0.4;
-        break;
-      case '蕾欧娜':
-        vec.Rationality = 0.8; vec.Boldness = 0.3; vec.Social = 0.4; vec.Idealism = 0.2; vec.Discipline = 1.0; vec.Empathy = 0.3;
-        break;
-      case '忧雾':
-        vec.Rationality = 0.2; vec.Boldness = 0.5; vec.Social = -0.7; vec.Idealism = 0.6; vec.Discipline = -0.3; vec.Empathy = -0.2;
-        break;
-      case '芙拉薇娅':
-        vec.Rationality = 0.9; vec.Boldness = -0.1; vec.Social = -0.2; vec.Idealism = 0.4; vec.Discipline = 0.7; vec.Empathy = -0.1;
-        break;
+    // 欧泊 (Opal)
+    case '米雪儿·李':
+      vec.Rationality = -0.5; vec.Boldness = 1.0; vec.Social = 0.4; vec.Idealism = 0.9; vec.Discipline = -0.9; vec.Empathy = 0.3;
+      break;
+    case '信':
+      vec.Rationality = 0.9; vec.Boldness = 0.2; vec.Social = -0.6; vec.Idealism = 0.7; vec.Discipline = 0.9; vec.Empathy = -0.3;
+      break;
+    case '心夏':
+      vec.Rationality = 0.3; vec.Boldness = 0.4; vec.Social = 0.9; vec.Idealism = 0.2; vec.Discipline = -0.4; vec.Empathy = 0.8;
+      break;
+    case '伊薇特':
+      vec.Rationality = 0.7; vec.Boldness = -0.9; vec.Social = -1.0; vec.Idealism = 0.1; vec.Discipline = 0.5; vec.Empathy = 0.5;
+      break;
+    case '千代':
+      vec.Rationality = 0.4; vec.Boldness = -0.2; vec.Social = 0.5; vec.Idealism = 0.3; vec.Discipline = 0.8; vec.Empathy = 0.4;
+      break;
+    case '蕾欧娜':
+      vec.Rationality = 0.8; vec.Boldness = 0.3; vec.Social = 0.4; vec.Idealism = 0.2; vec.Discipline = 1.0; vec.Empathy = 0.3;
+      break;
+    case '忧雾':
+      vec.Rationality = 0.1; vec.Boldness = 0.7; vec.Social = -0.9; vec.Idealism = 0.5; vec.Discipline = -0.6; vec.Empathy = -0.5;
+      break;
+    case '芙拉薇娅':
+      vec.Rationality = 0.9; vec.Boldness = -0.2; vec.Social = -0.5; vec.Idealism = 0.2; vec.Discipline = 0.8; vec.Empathy = -0.4;
+      break;
 
-      // 剪刀手 (Scissors)
-      case '明':
-        vec.Rationality = -0.6; vec.Boldness = 1.0; vec.Social = 0.9; vec.Idealism = 0.8; vec.Discipline = -0.8; vec.Empathy = 0.7;
-        break;
-      case '拉薇':
-        vec.Rationality = 0.6; vec.Boldness = 0.1; vec.Social = -0.8; vec.Idealism = 0.9; vec.Discipline = 0.8; vec.Empathy = 0.2;
-        break;
-      case '梅瑞狄斯':
-        vec.Rationality = 1.0; vec.Boldness = -0.2; vec.Social = -0.5; vec.Idealism = 0.9; vec.Discipline = 0.6; vec.Empathy = 0.1;
-        break;
-      case '香奈美':
-        vec.Rationality = 0.1; vec.Boldness = 0.2; vec.Social = 0.7; vec.Idealism = 0.5; vec.Discipline = -0.2; vec.Empathy = 0.5;
-        break;
-      case '令':
-        vec.Rationality = 0.7; vec.Boldness = 0.3; vec.Social = -0.4; vec.Idealism = 0.6; vec.Discipline = 0.7; vec.Empathy = 0.2;
-        break;
-      case '艾卡':
-        vec.Rationality = -0.3; vec.Boldness = 0.8; vec.Social = 0.6; vec.Idealism = 0.9; vec.Discipline = -0.5; vec.Empathy = 0.5;
-        break;
-      case '珐格兰丝':
-        vec.Rationality = 0.4; vec.Boldness = -0.5; vec.Social = -0.3; vec.Idealism = 0.6; vec.Discipline = 0.4; vec.Empathy = 0.8;
-        break;
-      case '玛拉':
-        vec.Rationality = -0.5; vec.Boldness = 0.9; vec.Social = -0.4; vec.Idealism = 0.3; vec.Discipline = -0.6; vec.Empathy = -0.5;
-        break;
+    // 剪刀手 (Scissors)
+    case '明':
+      vec.Rationality = -0.7; vec.Boldness = 1.0; vec.Social = 0.9; vec.Idealism = 0.9; vec.Discipline = -0.9; vec.Empathy = 0.7;
+      break;
+    case '拉薇':
+      vec.Rationality = 0.6; vec.Boldness = 0.2; vec.Social = -0.9; vec.Idealism = 0.9; vec.Discipline = 0.9; vec.Empathy = 0.2;
+      break;
+    case '梅瑞狄斯':
+      vec.Rationality = 1.0; vec.Boldness = -0.3; vec.Social = -0.7; vec.Idealism = 1.0; vec.Discipline = 0.5; vec.Empathy = 0.0;
+      break;
+    case '香奈美':
+      vec.Rationality = 0.1; vec.Boldness = 0.2; vec.Social = 0.8; vec.Idealism = 0.4; vec.Discipline = -0.3; vec.Empathy = 0.5;
+      break;
+    case '令':
+      vec.Rationality = 0.6; vec.Boldness = 0.4; vec.Social = -0.5; vec.Idealism = 0.5; vec.Discipline = 0.7; vec.Empathy = 0.3;
+      break;
+    case '艾卡':
+      vec.Rationality = -0.4; vec.Boldness = 0.9; vec.Social = 0.5; vec.Idealism = 0.9; vec.Discipline = -0.7; vec.Empathy = 0.5;
+      break;
+    case '珐格兰丝':
+      vec.Rationality = 0.3; vec.Boldness = -0.5; vec.Social = -0.4; vec.Idealism = 0.6; vec.Discipline = 0.3; vec.Empathy = 0.9;
+      break;
+    case '玛拉':
+      vec.Rationality = -0.6; vec.Boldness = 1.0; vec.Social = -0.6; vec.Idealism = 0.1; vec.Discipline = -0.8; vec.Empathy = -0.7;
+      break;
 
-      // 乌尔比诺 (Urbino)
-      case '星绘':
-        vec.Rationality = 0.5; vec.Boldness = -0.3; vec.Social = 0.4; vec.Idealism = 1.0; vec.Discipline = 0.6; vec.Empathy = 0.9;
-        break;
-      case '奥黛丽':
-        vec.Rationality = 0.8; vec.Boldness = 0.4; vec.Social = -0.3; vec.Idealism = 0.5; vec.Discipline = 0.9; vec.Empathy = -0.2;
-        break;
-      case '白墨':
-        vec.Rationality = -0.2; vec.Boldness = 0.9; vec.Social = 1.0; vec.Idealism = 0.6; vec.Discipline = -0.9; vec.Empathy = 0.4;
-        break;
-      case '玛德蕾娜':
-        vec.Rationality = -0.5; vec.Boldness = 0.6; vec.Social = 0.8; vec.Idealism = 0.9; vec.Discipline = -0.6; vec.Empathy = 0.7;
-        break;
-      case '绯莎':
-        vec.Rationality = 0.6; vec.Boldness = 0.4; vec.Social = -0.7; vec.Idealism = 0.2; vec.Discipline = 0.3; vec.Empathy = -0.4;
-        break;
-      case '加拉蒂亚':
-        vec.Rationality = 0.7; vec.Boldness = 0.5; vec.Social = 0.2; vec.Idealism = 0.8; vec.Discipline = 0.2; vec.Empathy = -0.1;
-        break;
-      case '汐':
-        vec.Rationality = 0.6; vec.Boldness = 0.2; vec.Social = -0.3; vec.Idealism = -0.5; vec.Discipline = 0.4; vec.Empathy = -0.2;
-        break;
-    }
+    // 乌尔比诺 (Urbino)
+    case '星绘':
+      vec.Rationality = 0.4; vec.Boldness = -0.3; vec.Social = 0.3; vec.Idealism = 1.0; vec.Discipline = 0.5; vec.Empathy = 1.0;
+      break;
+    case '奥黛丽':
+      vec.Rationality = 0.8; vec.Boldness = 0.5; vec.Social = -0.4; vec.Idealism = 0.4; vec.Discipline = 1.0; vec.Empathy = -0.3;
+      break;
+    case '白墨':
+      vec.Rationality = -0.3; vec.Boldness = 1.0; vec.Social = 1.0; vec.Idealism = 0.5; vec.Discipline = -1.0; vec.Empathy = 0.3;
+      break;
+    case '玛德蕾娜':
+      vec.Rationality = -0.4; vec.Boldness = 0.5; vec.Social = 0.8; vec.Idealism = 1.0; vec.Discipline = -0.7; vec.Empathy = 0.8;
+      break;
+    case '绯莎':
+      vec.Rationality = 0.5; vec.Boldness = 0.6; vec.Social = -0.8; vec.Idealism = 0.0; vec.Discipline = 0.2; vec.Empathy = -0.5;
+      break;
+    case '加拉蒂亚':
+      vec.Rationality = 0.7; vec.Boldness = 0.6; vec.Social = 0.1; vec.Idealism = 0.7; vec.Discipline = 0.1; vec.Empathy = -0.2;
+      break;
+    case '汐':
+      vec.Rationality = 0.5; vec.Boldness = 0.3; vec.Social = -0.4; vec.Idealism = -0.6; vec.Discipline = 0.3; vec.Empathy = -0.1;
+      break;
+  }
 
     vectors[char.name] = vec;
   });

@@ -16,8 +16,9 @@ export const calculateScores = (userResponses, characterVectors) => {
 
   // 2. 权重累加
   userResponses.forEach(response => {
-    Object.keys(response.effects).forEach(trait => {
-      userVector[trait] += response.effects[trait];
+    const traits = response.scores || response.effects || {};
+    Object.keys(traits).forEach(trait => {
+      userVector[trait] += traits[trait];
     });
   });
 
@@ -40,11 +41,12 @@ export const calculateScores = (userResponses, characterVectors) => {
     // 余弦相似度
     const similarity = dotProduct / (Math.sqrt(userMag) * Math.sqrt(charMag) || 1);
     
-    // 冲突惩罚
+    // 冲突惩罚 (使用归一化后的 userVector)
     let penalty = 0;
     Object.keys(userVector).forEach(trait => {
-      if (Math.sign(userVector[trait]) !== Math.sign(charVec[trait]) && Math.abs(userVector[trait]) > 0.5) {
-        penalty += 0.1 * Math.abs(userVector[trait] - charVec[trait]);
+      const normalizedUserTrait = userMag > 0 ? userVector[trait] / Math.sqrt(userMag) : 0;
+      if (Math.sign(userVector[trait]) !== Math.sign(charVec[trait]) && Math.abs(normalizedUserTrait) > 0.1) {
+        penalty += 2.0 * Math.abs(normalizedUserTrait - charVec[trait]); // 调整权重使惩罚更有效
       }
     });
 

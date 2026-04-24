@@ -1,814 +1,831 @@
 /**
- * 80 道高区分度人格测试题
- * 每个选项映射多个 trait 维度 (-0.5 到 0.5)
+ * 卡拉彼丘人格测试题（优化版）
+ * 改进方向：
+ * - 避免极端化表述，使用更温和的情境描述
+ * - 增加区分度：选项都合理但反映不同特质
+ * - 减少社会赞许性偏误
+ * - 平衡6个维度的覆盖
+ * - 加入张力问题（两难选择）
  */
 
-export const QUESTIONS = [
-  // --- 生活场景 (1-20) ---
+export const questions = [
+  // ==========================================
+  // 【第一部分】日常习惯与行为模式 (1-16)
+  // ==========================================
   {
     id: 1,
-    text: "在一个难得的休息日，你发现最喜欢的猫咖今天没有开张，你会？",
+    text: "你习惯用什么样的方式开始新的一天？",
     options: [
-      { text: "在门口徘徊一会儿，试图找找是否有其他入口或联系方式", effects: { Social: -0.2, Boldness: 0.1, Discipline: -0.1 } },
-      { text: "立刻打开手机搜索附近评价最高的新店，开启一场未知的探店之旅", effects: { Boldness: 0.4, Social: 0.3, Rationality: -0.1 } },
-      { text: "感到一丝失落，但很快决定回家自己煮杯咖啡，享受安静的阅读时光", effects: { Social: -0.4, Rationality: 0.2, Discipline: 0.3 } },
-      { text: "给同样喜欢猫的朋友发消息，询问他们是否有其他推荐，顺便约个聚会", effects: { Social: 0.5, Empathy: 0.3, Boldness: 0.1 } }
+      { text: "制定详细的日程表，按计划一项项完成", scores: { Discipline: 2, Rationality: 1 } },
+      { text: "看当时的状态和心情，灵活安排", scores: { Boldness: 1, Discipline: -1 } },
+      { text: "先处理紧急的消息和事务，其他再说", scores: { Social: 1, Empathy: 1 } },
+      { text: "先安静地想一下今天最重要的目标是什么", scores: { Idealism: 1, Rationality: 1 } }
     ]
   },
   {
     id: 2,
-    text: "你在超市排队时，发现前面的人因为忘带钱包而陷入尴尬，你会？",
+    text: "你的工作台/书桌通常是什么状态？",
     options: [
-      { text: "礼貌地观察情况，如果金额不大，直接帮对方支付了", effects: { Empathy: 0.5, Boldness: 0.2, Idealism: 0.3 } },
-      { text: "保持沉默，等待收银员处理，认为这是对方应负的责任", effects: { Rationality: 0.4, Empathy: -0.4, Social: -0.2 } },
-      { text: "向收银员建议先把东西移开，让后面的人先结账以提高效率", effects: { Rationality: 0.5, Discipline: 0.3, Empathy: -0.1 } },
-      { text: "主动和对方搭话，缓解尴尬气氛，并询问是否需要手机转账协助", effects: { Social: 0.4, Empathy: 0.4, Boldness: 0.1 } }
+      { text: "所有物品分类摆放，干净整洁，缺什么一眼能找到", scores: { Discipline: 2, Rationality: 1 } },
+      { text: "东西有点乱，但自己知道在哪，收拾反而找不到", scores: { Boldness: -1, Rationality: 0 } },
+      { text: "摆满喜欢的手办、照片等私人物品，看着很开心", scores: { Empathy: 2, Idealism: 1 } },
+      { text: "尽量精简，只保留最必要的功能物品", scores: { Rationality: 2, Social: -1 } }
     ]
   },
   {
     id: 3,
-    text: "如果你能拥有一只战术机器猫，你最希望它具备的功能是？",
+    text: "周末突然多出半天自由时间，你会？",
     options: [
-      { text: "极致的火力支援，能在关键时刻打破任何僵局", effects: { Boldness: 0.5, Rationality: -0.2, Idealism: 0.2 } },
-      { text: "全方位的雷达侦测，能预判所有潜在的危险", effects: { Rationality: 0.4, Discipline: 0.3, Boldness: -0.2 } },
-      { text: "温柔的医疗护理与心理安抚，是心灵的港湾", effects: { Empathy: 0.5, Social: 0.2, Boldness: -0.1 } },
-      { text: "隐匿的侦察功能，能悄无声息地收集情报", effects: { Rationality: 0.3, Boldness: -0.3, Discipline: 0.2 } }
+      { text: "约上朋友见面聊天，一起做点什么", scores: { Social: 2, Empathy: 1 } },
+      { text: "一个人待着，做自己想做的事", scores: { Social: -2, Idealism: 1 } },
+      { text: "把之前落下的任务、工作补一补", scores: { Discipline: 2, Rationality: 1 } },
+      { text: "随便逛逛，偶遇什么算什么", scores: { Boldness: 2, Discipline: -1 } }
     ]
   },
   {
     id: 4,
-    text: "参加一个陌生人的聚会，你通常会选择坐在哪里？",
+    text: "遇到一个很难缠的问题，你会先？",
     options: [
-      { text: "角落的阴影处，默默观察每个人的言行举止", effects: { Social: -0.5, Rationality: 0.3, Boldness: -0.2 } },
-      { text: "食物区附近，一边品尝美食一边等待自然发生的对话", effects: { Social: 0.1, Rationality: -0.1, Boldness: -0.1 } },
-      { text: "人群中心，主动发起有趣的话题并带动气氛", effects: { Social: 0.5, Boldness: 0.3, Empathy: 0.2 } },
-      { text: "靠近出口的位置，确保在感到不适时能随时离开", effects: { Social: -0.3, Rationality: 0.2, Boldness: -0.3 } }
+      { text: "查资料、列方案，用逻辑分析来解决", scores: { Rationality: 2, Discipline: 1 } },
+      { text: "找有经验的人请教，听听别人的看法", scores: { Social: 1, Empathy: 1 } },
+      { text: "先放一边，过段时间再想可能有新思路", scores: { Boldness: -1, Idealism: 1 } },
+      { text: "凭直觉尝试，错了再换方法", scores: { Boldness: 2, Rationality: -1 } }
     ]
   },
   {
     id: 5,
-    text: "你最喜欢的解压方式是？",
+    text: "你通常以什么方式保存重要的资料或回忆？",
     options: [
-      { text: "在虚拟的游戏世界里疯狂刷本，发泄情绪", effects: { Boldness: 0.3, Social: -0.2, Rationality: -0.2 } },
-      { text: "进行一场挥汗如雨的体能训练或拳击练习", effects: { Boldness: 0.4, Discipline: 0.4, Rationality: -0.1 } },
-      { text: "独自整理房间或工作台，直到一切都严丝合缝", effects: { Discipline: 0.5, Rationality: 0.3, Social: -0.3 } },
-      { text: "看一部深奥的哲学电影或阅读晦涩的专业书籍", effects: { Rationality: 0.5, Idealism: 0.3, Social: -0.4 } }
+      { text: "分门别类整理好，建立完整的归档系统", scores: { Discipline: 2, Rationality: 1 } },
+      { text: "随手记下来，事后不一定能找到", scores: { Boldness: 1, Discipline: -2 } },
+      { text: "存在云端，随时能调取查看", scores: { Rationality: 1, Social: 0 } },
+      { text: "保留实体纪念品，每次看到都能想起", scores: { Empathy: 2, Idealism: 1 } }
     ]
   },
   {
     id: 6,
-    text: "当你发现手机里有一张很久以前的合影，但照片里的人已经断了联系，你会？",
+    text: "如果让你选择一种技能长期学习，你会选？",
     options: [
-      { text: "感慨万千，决定立刻给对方发个消息问候一下", effects: { Empathy: 0.4, Social: 0.4, Boldness: 0.2 } },
-      { text: "平静地删除照片，认为过去的就是过去了，没必要留恋", effects: { Rationality: 0.5, Empathy: -0.3, Social: -0.3 } },
-      { text: "将照片存档，并开始反思导致关系断裂的原因", effects: { Rationality: 0.3, Empathy: 0.2, Social: -0.2 } },
-      { text: "发个朋友圈（仅自己可见），写下当时的心情作为纪念", effects: { Idealism: 0.3, Empathy: 0.3, Social: -0.1 } }
+      { text: "能解决实际问题的专业技术", scores: { Rationality: 2, Discipline: 1 } },
+      { text: "能表达情感、发挥创意的艺术", scores: { Idealism: 2, Empathy: 1 } },
+      { text: "能影响他人、带动团队的领导力", scores: { Social: 2, Boldness: 1 } },
+      { text: "能突破自我、挑战极限的极限运动", scores: { Boldness: 2, Discipline: -1 } }
     ]
   },
   {
     id: 7,
-    text: "如果你的邻居总是深夜大声排练乐队，你会？",
+    text: "你更倾向于什么样的穿衣风格？",
     options: [
-      { text: "直接上门投诉，甚至不惜发生激烈的言语冲突", effects: { Boldness: 0.5, Social: 0.2, Discipline: -0.2 } },
-      { text: "写一张礼貌的便条贴在对方门口，希望能互相体谅", effects: { Social: 0.3, Discipline: 0.3, Empathy: 0.2 } },
-      { text: "默默戴上降噪耳机，通过改变自己来适应环境", effects: { Social: -0.4, Discipline: 0.2, Boldness: -0.3 } },
-      { text: "调查对方的排练规律，选择在对方休息时进行反击", effects: { Rationality: 0.4, Boldness: 0.2, Discipline: -0.3 } }
+      { text: "简洁实用，适合各种场合的基础款", scores: { Discipline: 2, Rationality: 1 } },
+      { text: "有个性特色，能表达自我态度", scores: { Boldness: 2, Idealism: 1 } },
+      { text: "舒适为主，怎么舒服怎么来", scores: { Empathy: 1, Discipline: -1 } },
+      { text: "跟随流行，时尚得体就好", scores: { Social: 1, Idealism: 0 } }
     ]
   },
   {
     id: 8,
-    text: "你对‘规则’的态度是？",
+    text: "当你特别想要某样东西时，你会？",
     options: [
-      { text: "必须严格遵守，规则是社会运行的基石", effects: { Discipline: 0.5, Rationality: 0.3, Boldness: -0.3 } },
-      { text: "规则是用来打破的，只有打破常规才能进步", effects: { Boldness: 0.5, Discipline: -0.5, Idealism: 0.2 } },
-      { text: "灵活运用，在不触碰底线的前提下寻找最优解", effects: { Rationality: 0.4, Boldness: 0.2, Discipline: 0.1 } },
-      { text: "规则应该是温柔的，应根据具体情况展现人文关怀", effects: { Empathy: 0.4, Idealism: 0.3, Discipline: -0.2 } }
+      { text: "制定计划存钱，等待合适的时机购买", scores: { Discipline: 2, Rationality: 1 } },
+      { text: "想办法尽快得到，哪怕需要付出更多", scores: { Boldness: 2, Discipline: -1 } },
+      { text: "想想是不是真的需要，可能过段时间就不想要了", scores: { Rationality: 1, Idealism: 1 } },
+      { text: "告诉身边的人，寻求他们的建议或帮助", scores: { Social: 1, Empathy: 1 } }
     ]
   },
   {
     id: 9,
-    text: "如果你在路上捡到一个装满秘密的笔记本，你会？",
+    text: "你通常如何处理未读的消息通知？",
     options: [
-      { text: "毫不犹豫地交给警察或失物招领处，绝不偷看", effects: { Discipline: 0.5, Rationality: 0.2, Idealism: 0.3 } },
-      { text: "因为强烈的好奇心翻看几页，试图了解失主的身份", effects: { Boldness: 0.3, Rationality: -0.1, Discipline: -0.3 } },
-      { text: "分析其中的内容，看看是否能从中提取有价值的信息", effects: { Rationality: 0.5, Boldness: 0.1, Empathy: -0.2 } },
-      { text: "通过笔记中的线索，自己悄悄寻找失主并归还", effects: { Idealism: 0.4, Boldness: 0.2, Social: 0.1 } }
+      { text: "尽快回复，不想让对方等待太久", scores: { Social: 2, Empathy: 1 } },
+      { text: "看到就回，不让未读堆积", scores: { Discipline: 2, Social: 1 } },
+      { text: "有时会忘记回，过后想起来了再说", scores: { Boldness: 1, Discipline: -1 } },
+      { text: "选择性回复，只处理重要或紧急的", scores: { Rationality: 2, Social: -1 } }
     ]
   },
   {
     id: 10,
-    text: "对于‘奶茶’这种饮品，你的看法是？",
+    text: "你更喜欢在什么时间段工作/学习？",
     options: [
-      { text: "周五犒劳自己的必备良药，是生活的调味剂", effects: { Empathy: 0.3, Social: 0.2, Discipline: -0.2 } },
-      { text: "极度不健康，会严格计算卡路里并尽量克制", effects: { Discipline: 0.5, Rationality: 0.4, Boldness: -0.1 } },
-      { text: "只喝冰的，温度能让我保持清醒和冷静", effects: { Rationality: 0.2, Social: -0.2, Boldness: 0.1 } },
-      { text: "无所谓，有什么喝什么，量大管饱就行", effects: { Boldness: 0.3, Rationality: -0.2, Discipline: -0.3 } }
+      { text: "早晨头脑清醒的时候，效率最高", scores: { Rationality: 1, Discipline: 1 } },
+      { text: "夜深人静时，没人打扰能更专注", scores: { Social: -1, Idealism: 1 } },
+      { text: "随时可以，看状态和任务需求", scores: { Boldness: 1, Discipline: -1 } },
+      { text: "和团队一起，大家都在的时候更有动力", scores: { Social: 2, Empathy: 1 } }
     ]
   },
   {
     id: 11,
-    text: "你在工作中发现了一个可能导致严重后果的细微偏差，但此时已经是下班时间，你会？",
+    text: "面对一个需要长期坚持的目标，你会？",
     options: [
-      { text: "立刻留下来加班解决，不解决完绝不离开", effects: { Discipline: 0.5, Rationality: 0.3, Boldness: 0.1 } },
-      { text: "先记录下来，明天一早再处理，认为不差这一会儿", effects: { Rationality: 0.2, Discipline: -0.2, Boldness: -0.2 } },
-      { text: "发消息给相关负责人提醒，将责任和风险分摊出去", effects: { Social: 0.3, Rationality: 0.4, Discipline: 0.2 } },
-      { text: "如果没人发现，就假装不知道，祈祷不会出事", effects: { Boldness: -0.4, Discipline: -0.5, Empathy: -0.3 } }
+      { text: "制定阶段性计划，每天按部就班完成", scores: { Discipline: 2, Rationality: 1 } },
+      { text: "先全力冲刺，懈怠了再调整", scores: { Boldness: 2, Discipline: -1 } },
+      { text: "经常回顾目标的意义，给自己打气", scores: { Idealism: 2, Empathy: 1 } },
+      { text: "找志同道合的人一起，互相监督", scores: { Social: 2, Discipline: 1 } }
     ]
   },
   {
     id: 12,
-    text: "你认为‘理想的家’应该是？",
+    text: "你通常如何做决定？",
     options: [
-      { text: "充满高科技设备和各种智能机器人的实验室感", effects: { Rationality: 0.4, Social: -0.4, Boldness: 0.1 } },
-      { text: "温馨舒适，到处是猫咪和软绵绵的装饰品", effects: { Empathy: 0.5, Social: 0.3, Boldness: -0.2 } },
-      { text: "极简风格，只有生活必需品，没有任何冗余", effects: { Discipline: 0.5, Rationality: 0.4, Social: -0.5 } },
-      { text: "经常举办聚会，充满欢声笑语的开放空间", effects: { Social: 0.5, Boldness: 0.3, Empathy: 0.2 } }
+      { text: "收集足够信息，权衡利弊后做出理性选择", scores: { Rationality: 2, Discipline: 1 } },
+      { text: "跟随内心直觉，觉得对就去做", scores: { Boldness: 2, Rationality: -1 } },
+      { text: "问问重要的人的意见，综合考虑", scores: { Social: 1, Empathy: 1 } },
+      { text: "看长远影响，思考是否符合价值观", scores: { Idealism: 2, Rationality: 1 } }
     ]
   },
   {
     id: 13,
-    text: "在选择衣服时，你首要考虑的是？",
+    text: "当你需要学习新东西时，你会？",
     options: [
-      { text: "实用性与功能性，是否有足够的口袋装工具", effects: { Rationality: 0.4, Discipline: 0.3, Boldness: -0.1 } },
-      { text: "当下的时尚潮流，必须要能彰显我的个性", effects: { Boldness: 0.4, Social: 0.4, Rationality: -0.2 } },
-      { text: "舒适度，最好能让我随时进入放松或宅家状态", effects: { Social: -0.3, Empathy: 0.2, Boldness: -0.2 } },
-      { text: "正式与得体，代表了我的职业素养和礼貌", effects: { Discipline: 0.5, Social: 0.2, Rationality: 0.2 } }
+      { text: "系统学习，从基础开始扎实掌握", scores: { Discipline: 2, Rationality: 1 } },
+      { text: "边做边学，在实践中掌握要点", scores: { Boldness: 2, Rationality: -1 } },
+      { text: "找老师或前辈带，能少走弯路", scores: { Social: 1, Empathy: 1 } },
+      { text: "先了解整体框架，再深入感兴趣的部分", scores: { Idealism: 1, Rationality: 1 } }
     ]
   },
   {
     id: 14,
-    text: "如果你突然获得了一大笔奖金，你会？",
+    text: "你更倾向于哪种消费方式？",
     options: [
-      { text: "全部存入银行或进行稳健理财，为未来做打算", effects: { Rationality: 0.5, Discipline: 0.4, Boldness: -0.4 } },
-      { text: "购买那套心仪已久的顶级游戏装备或电子产品", effects: { Boldness: 0.3, Social: -0.1, Discipline: -0.2 } },
-      { text: "请所有的好朋友大吃一顿，分享这份喜悦", effects: { Social: 0.5, Empathy: 0.4, Boldness: 0.2 } },
-      { text: "捐献给相关的研究机构或慈善组织，实现某种价值", effects: { Idealism: 0.5, Empathy: 0.3, Rationality: 0.2 } }
+      { text: "量入为出，有计划地储蓄和消费", scores: { Discipline: 2, Rationality: 1 } },
+      { text: "喜欢就买，不太考虑以后", scores: { Boldness: 1, Discipline: -2 } },
+      { text: "该花的花，但会确保基本保障", scores: { Rationality: 1, Empathy: 1 } },
+      { text: "愿意为体验和兴趣投入，即使贵一点", scores: { Idealism: 2, Boldness: 1 } }
     ]
   },
   {
     id: 15,
-    text: "当你在阅读一本侦探小说时，你最享受的过程是？",
+    text: "你通常如何记录重要的事情？",
     options: [
-      { text: "在作者揭晓答案前，通过逻辑推理出凶手是谁", effects: { Rationality: 0.5, Discipline: 0.2, Boldness: -0.1 } },
-      { text: "感受书中角色的情感纠葛和悲欢离合", effects: { Empathy: 0.5, Idealism: 0.2, Social: 0.1 } },
-      { text: "惊叹于凶手奇诡的犯罪手法和大胆的构思", effects: { Boldness: 0.4, Rationality: 0.1, Discipline: -0.2 } },
-      { text: "反思案件背后的社会问题和人性阴暗面", effects: { Idealism: 0.4, Rationality: 0.3, Empathy: 0.2 } }
+      { text: "用笔记或清单，列得清清楚楚", scores: { Discipline: 2, Rationality: 1 } },
+      { text: "存在手机备忘录或云端", scores: { Rationality: 1, Social: 0 } },
+      { text: "记在心里，相信自己的记忆力", scores: { Boldness: 1, Discipline: -1 } },
+      { text: "告诉信任的人，让他们帮忙提醒", scores: { Social: 2, Empathy: 1 } }
     ]
   },
   {
     id: 16,
-    text: "你在餐厅吃到了很难吃的食物，你会？",
+    text: "面对突然的空闲时间，你会？",
     options: [
-      { text: "直接找服务员或老板反映情况，要求重做或退款", effects: { Boldness: 0.4, Social: 0.2, Rationality: 0.1 } },
-      { text: "默默吃完，并在心里给这家店打上黑名单，下次不来", effects: { Social: -0.3, Discipline: 0.2, Boldness: -0.3 } },
-      { text: "安慰自己这只是个例，并试图找出食物里唯一的优点", effects: { Empathy: 0.4, Idealism: 0.3, Social: 0.1 } },
-      { text: "在点评网站上写下一篇极度客观严谨的负面评价", effects: { Rationality: 0.5, Discipline: 0.3, Social: -0.1 } }
+      { text: "列个待办清单，把之前想做的事完成", scores: { Discipline: 2, Rationality: 1 } },
+      { text: "放松休息，让身心得到休息", scores: { Empathy: 1, Discipline: -1 } },
+      { text: "突发奇想，做点不一样的事", scores: { Boldness: 2, Idealism: 1 } },
+      { text: "联系很久没见的人，聊聊近况", scores: { Social: 2, Empathy: 1 } }
     ]
   },
+
+  // ==========================================
+  // 【第二部分】社交互动与人际关系 (17-32)
+  // ==========================================
   {
     id: 17,
-    text: "你如何看待‘怀旧’这件事？",
+    text: "在社交场合中，你通常扮演什么角色？",
     options: [
-      { text: "是逃避现实的表现，人应该永远看向未来", effects: { Rationality: 0.4, Boldness: 0.3, Idealism: -0.2 } },
-      { text: "是心灵的寄托，那些旧物承载了最温暖的记忆", effects: { Empathy: 0.5, Idealism: 0.4, Social: 0.1 } },
-      { text: "是审美的源泉，经典的文化符号永不过时", effects: { Idealism: 0.3, Rationality: 0.2, Social: -0.1 } },
-      { text: "偶尔为之，作为对自己过去经历的复盘与总结", effects: { Rationality: 0.3, Discipline: 0.4, Empathy: 0.1 } }
+      { text: "倾听者，观察大家说什么，适时参与", scores: { Social: 0, Empathy: 1 } },
+      { text: "活跃气氛的人，带动话题和节奏", scores: { Social: 2, Boldness: 1 } },
+      { text: "照顾大家的人，关注每个人的状态", scores: { Empathy: 2, Social: 1 } },
+      { text: "有目的性地交流，建立有用的人脉", scores: { Rationality: 2, Social: 1 } }
     ]
   },
   {
     id: 18,
-    text: "如果你被困在一个荒岛上，你只能带一样东西，你会选？",
+    text: "朋友向你倾诉烦恼时，你通常会？",
     options: [
-      { text: "一本厚厚的、涵盖各种生存技能的百科全书", effects: { Rationality: 0.5, Discipline: 0.4, Boldness: -0.2 } },
-      { text: "一把多功能的、锋利耐用的格斗匕首", effects: { Boldness: 0.5, Rationality: 0.2, Discipline: 0.1 } },
-      { text: "一个能无限播放音乐和讲故事的播放器", effects: { Empathy: 0.4, Social: -0.2, Idealism: 0.3 } },
-      { text: "一张家人的合影，这是我生存下去的唯一动力", effects: { Empathy: 0.5, Idealism: 0.4, Rationality: -0.3 } }
+      { text: "认真倾听，给予情感上的支持和安慰", scores: { Empathy: 2, Social: 1 } },
+      { text: "分析问题，给出实际的解决方案", scores: { Rationality: 2, Empathy: -1 } },
+      { text: "陪他做点开心的事，转移注意力", scores: { Boldness: 1, Empathy: 1 } },
+      { text: "问清楚细节，一起想办法", scores: { Social: 1, Rationality: 1 } }
     ]
   },
   {
     id: 19,
-    text: "当你遇到一个非常讨厌的人时，你会？",
+    text: "你更愿意和什么样的人深交？",
     options: [
-      { text: "保持绝对的礼貌，但建立起不可逾越的心理防线", effects: { Discipline: 0.5, Rationality: 0.3, Social: -0.2 } },
-      { text: "尽可能回避，完全切断与之交集的可能性", effects: { Social: -0.4, Boldness: -0.3, Rationality: 0.2 } },
-      { text: "直接表达不满，让对方知道我的底线在哪里", effects: { Boldness: 0.5, Social: 0.3, Discipline: -0.2 } },
-      { text: "试图理解对方为什么会这样，寻找共存的可能性", effects: { Empathy: 0.5, Social: 0.4, Rationality: 0.1 } }
+      { text: "价值观相似，能理解彼此的人", scores: { Idealism: 2, Social: 0 } },
+      { text: "性格互补，能带来不同视角的人", scores: { Rationality: 1, Social: 1 } },
+      { text: "真诚坦率，有什么说什么的人", scores: { Boldness: 2, Empathy: 1 } },
+      { text: "有共同兴趣，能一起做事的人", scores: { Social: 2, Boldness: 1 } }
     ]
   },
   {
     id: 20,
-    text: "对于‘命运’，你的看法是？",
+    text: "当你和别人的意见不一致时，你会？",
     options: [
-      { text: "命运是概率的集合，可以通过计算和规划来改变", effects: { Rationality: 0.5, Discipline: 0.3, Idealism: -0.3 } },
-      { text: "命运是用来抗争的，我命由我不由天", effects: { Boldness: 0.5, Idealism: 0.4, Discipline: -0.4 } },
-      { text: "命运是既定的剧本，我们要优雅地演好自己的角色", effects: { Idealism: 0.3, Discipline: 0.4, Rationality: 0.2 } },
-      { text: "命运是随风飘荡的种子，随遇而安也是一种智慧", effects: { Empathy: 0.4, Social: 0.2, Boldness: -0.3 } }
+      { text: "坚持自己的观点，试图说服对方", scores: { Boldness: 2, Rationality: 1 } },
+      { text: "尊重对方的想法，求同存异", scores: { Empathy: 2, Idealism: 1 } },
+      { text: "分析谁的更合理，接受正确的", scores: { Rationality: 2, Discipline: 1 } },
+      { text: "暂时搁置，以后再讨论", scores: { Social: 1, Discipline: 1 } }
     ]
   },
-
-  // --- 任务/工作 (21-40) ---
   {
     id: 21,
-    text: "在一次绝密行动中，由于突发状况，你必须在牺牲任务目标和牺牲队友之间做选择，你会？",
+    text: "你更喜欢什么样的友谊模式？",
     options: [
-      { text: "优先保全队友，认为人才是组织最宝贵的资产", effects: { Empathy: 0.5, Social: 0.4, Discipline: -0.3 } },
-      { text: "以任务目标为重，这是我们作为搜查官的职责底线", effects: { Discipline: 0.5, Rationality: 0.4, Empathy: -0.5 } },
-      { text: "寻找第三种方案，哪怕这意味着极高的个人风险", effects: { Boldness: 0.5, Idealism: 0.4, Rationality: 0.2 } },
-      { text: "迅速分析成功概率，选择损失最小的那一个方案", effects: { Rationality: 0.5, Discipline: 0.3, Empathy: -0.2 } }
+      { text: "经常见面聊天，分享生活点滴", scores: { Social: 2, Empathy: 1 } },
+      { text: "不常联系，但有事时全力支持", scores: { Idealism: 1, Social: 0 } },
+      { text: "一起做事，在合作中加深了解", scores: { Social: 1, Boldness: 1 } },
+      { text: "君子之交淡如水，保持适当距离", scores: { Rationality: 1, Social: -1 } }
     ]
   },
   {
     id: 22,
-    text: "你作为队长，面对一个性格古怪但能力超群的下属，你会如何管理？",
+    text: "当别人取得成就时，你的真实感受是？",
     options: [
-      { text: "给予对方绝对的自由空间，只看最终的成果", effects: { Boldness: 0.3, Discipline: -0.4, Rationality: 0.2 } },
-      { text: "通过情感关怀和共同爱好，拉近彼此的心理距离", effects: { Social: 0.5, Empathy: 0.4, Boldness: 0.1 } },
-      { text: "制定极其严密的考核制度，确保对方在可控范围内", effects: { Discipline: 0.5, Rationality: 0.4, Social: -0.2 } },
-      { text: "以身作则，用自己无可挑剔的专业能力让对方折服", effects: { Discipline: 0.4, Rationality: 0.3, Boldness: 0.2 } }
+      { text: "真心祝福，也为自己加油", scores: { Empathy: 2, Idealism: 1 } },
+      { text: "想知道他是怎么做到的，学习经验", scores: { Rationality: 2, Discipline: 1 } },
+      { text: "有点羡慕，也想证明自己", scores: { Boldness: 1, Social: 0 } },
+      { text: "没什么感觉，各有各的路", scores: { Rationality: 1, Social: -1 } }
     ]
   },
   {
     id: 23,
-    text: "你发现组织的某项核心计划可能存在伦理缺陷，你会？",
+    text: "你更倾向于如何表达感谢？",
     options: [
-      { text: "私下搜集证据，在合适的时机向更高层举报", effects: { Rationality: 0.4, Boldness: 0.2, Discipline: 0.1 } },
-      { text: "立刻联合志同道合的伙伴，公开质疑并要求停止", effects: { Boldness: 0.4, Social: 0.4, Idealism: 0.5 } },
-      { text: "保持沉默，相信组织的决策自有其更深层的考量", effects: { Discipline: 0.5, Rationality: 0.2, Boldness: -0.4 } },
-      { text: "既然无法改变，就选择叛离，去寻找真正的正义", effects: { Idealism: 0.5, Boldness: 0.4, Discipline: -0.5 } }
+      { text: "口头表达，真诚地说谢谢", scores: { Social: 1, Empathy: 1 } },
+      { text: "用实际行动，比如请吃饭或送礼物", scores: { Social: 2, Empathy: 1 } },
+      { text: "记在心里，以后有机会回报", scores: { Idealism: 1, Social: 0 } },
+      { text: "写下来或者发消息正式感谢", scores: { Discipline: 1, Rationality: 1 } }
     ]
   },
   {
     id: 24,
-    text: "在激烈的战场上，你最信任的武器是？",
+    text: "面对一个你不太喜欢的人，你会？",
     options: [
-      { text: "能够精准打击、一击必杀的远距离狙击步枪", effects: { Rationality: 0.4, Discipline: 0.4, Social: -0.3 } },
-      { text: "充满力量感、能贴身肉搏的近战刀刃或拳套", effects: { Boldness: 0.5, Rationality: -0.2, Discipline: 0.1 } },
-      { text: "各种精密的辅助无人机或高科技战术道具", effects: { Rationality: 0.5, Boldness: -0.1, Discipline: 0.2 } },
-      { text: "能够保护所有队友、抵御一切攻击的巨型护盾", effects: { Empathy: 0.5, Social: 0.3, Discipline: 0.4 } }
+      { text: "保持基本礼貌，但不会深入接触", scores: { Social: 0, Discipline: 1 } },
+      { text: "试着了解，可能会有新的看法", scores: { Empathy: 2, Idealism: 1 } },
+      { text: "直接表达不满，划清界限", scores: { Boldness: 2, Social: -1 } },
+      { text: "看情况，需要合作时还是会配合", scores: { Rationality: 1, Social: 1 } }
     ]
   },
   {
     id: 25,
-    text: "面对上级下达的一个明显是让你去‘送死’的自杀式任务，你会？",
+    text: "你更喜欢和朋友一起做什么？",
     options: [
-      { text: "义无反顾地接受，为了组织的利益牺牲是最高荣誉", effects: { Discipline: 0.5, Idealism: 0.4, Boldness: 0.3 } },
-      { text: "当面质疑指令的合理性，并要求给出充分的解释", effects: { Boldness: 0.4, Rationality: 0.3, Discipline: -0.2 } },
-      { text: "表面答应，但在执行过程中寻找逃生或变通的机会", effects: { Rationality: 0.4, Boldness: 0.2, Discipline: -0.4 } },
-      { text: "直接拒绝并反抗，认为任何组织都无权随意处置生命", effects: { Boldness: 0.5, Idealism: 0.5, Social: 0.2 } }
+      { text: "聊天分享，聊聊最近的想法和感受", scores: { Social: 2, Empathy: 1 } },
+      { text: "一起做事，完成某个目标或任务", scores: { Discipline: 1, Social: 1 } },
+      { text: "找乐子，做刺激好玩的活动", scores: { Boldness: 2, Social: 1 } },
+      { text: "安静地待在一起，各做各的也行", scores: { Social: 0, Idealism: 1 } }
     ]
   },
   {
     id: 26,
-    text: "在情报搜集过程中，你抓获了一名敌方间谍，你会采取什么手段获取情报？",
+    text: "当朋友做了让你失望的事，你会？",
     options: [
-      { text: "极度理性的心理博弈，利用对方的逻辑漏洞击碎防线", effects: { Rationality: 0.5, Discipline: 0.3, Empathy: -0.2 } },
-      { text: "展现温和的一面，通过共情和感化诱导对方开口", effects: { Empathy: 0.4, Social: 0.4, Rationality: 0.2 } },
-      { text: "利用高科技手段直接读取或溯源对方的脑部数据", effects: { Rationality: 0.5, Boldness: 0.1, Social: -0.4 } },
-      { text: "毫不留情的强力审讯，效率永远是第一位的", effects: { Boldness: 0.4, Empathy: -0.5, Discipline: 0.2 } }
+      { text: "直接沟通，说出你的感受", scores: { Boldness: 1, Empathy: 1 } },
+      { text: "给他机会解释，看看是什么原因", scores: { Empathy: 2, Rationality: 1 } },
+      { text: "记在心里，慢慢疏远", scores: { Social: -1, Discipline: 1 } },
+      { text: "看严重程度，再决定如何处理", scores: { Rationality: 2, Social: 0 } }
     ]
   },
   {
     id: 27,
-    text: "如果你的研究成果被他人剽窃，你会？",
+    text: "你更倾向于如何处理冲突？",
     options: [
-      { text: "通过法律和程序途径，搜集详尽的证据进行维权", effects: { Rationality: 0.5, Discipline: 0.4, Boldness: -0.1 } },
-      { text: "直接在技术社区公开曝光，让对方身败名裂", effects: { Boldness: 0.5, Social: 0.3, Discipline: -0.3 } },
-      { text: "无所谓，只要这项技术能造福人类，谁的名字不重要", effects: { Idealism: 0.5, Empathy: 0.4, Rationality: -0.2 } },
-      { text: "在对方的代码里埋下暗桩，让对方在关键时刻出丑", effects: { Rationality: 0.4, Boldness: 0.3, Discipline: -0.4 } }
+      { text: "当场说清楚，不留误会", scores: { Boldness: 2, Social: 0 } },
+      { text: "先冷静一下，再找合适时机沟通", scores: { Discipline: 2, Empathy: 1 } },
+      { text: "让对方先说，充分理解他的立场", scores: { Empathy: 2, Rationality: 1 } },
+      { text: "看谁有道理，就按对的来", scores: { Rationality: 2, Boldness: 0 } }
     ]
   },
   {
     id: 28,
-    text: "你认为一个优秀的指挥官最核心的特质是？",
+    text: "你更喜欢什么样的团队氛围？",
     options: [
-      { text: "绝对的冷静，在任何压力下都能做出最优判断", effects: { Rationality: 0.5, Discipline: 0.4, Boldness: -0.2 } },
-      { text: "极强的号召力，能让所有人甘愿为之赴死", effects: { Social: 0.5, Idealism: 0.4, Boldness: 0.3 } },
-      { text: "不拘一格的奇谋，总能出人意料地扭转乾坤", effects: { Boldness: 0.5, Rationality: 0.3, Discipline: -0.3 } },
-      { text: "对下属的深度体恤，能最大限度保全每个生命", effects: { Empathy: 0.5, Social: 0.3, Discipline: 0.2 } }
+      { text: "高效务实，目标明确各司其职", scores: { Rationality: 2, Discipline: 1 } },
+      { text: "轻松活跃，大家像朋友一样", scores: { Social: 2, Boldness: 1 } },
+      { text: "互相支持，彼此关心像家人", scores: { Empathy: 2, Social: 1 } },
+      { text: "有挑战性，能激发潜能和创意", scores: { Boldness: 2, Idealism: 1 } }
     ]
   },
   {
     id: 29,
-    text: "在漫长的潜伏任务中，你感到极度的孤独和自我怀疑，你会？",
+    text: "当别人请求你帮忙时，你会？",
     options: [
-      { text: "反复阅读任务简报和初心，强化自己的身份认同", effects: { Discipline: 0.5, Rationality: 0.2, Idealism: 0.3 } },
-      { text: "在当地寻找一个小动物或机器人作为情感寄托", effects: { Empathy: 0.5, Social: -0.2, Boldness: -0.2 } },
-      { text: "通过高强度的工作来麻痹自己，不给自己思考的时间", effects: { Discipline: 0.4, Rationality: 0.3, Social: -0.4 } },
-      { text: "暗中联系昔日的战友，哪怕这违反了潜伏纪律", effects: { Social: 0.4, Empathy: 0.3, Discipline: -0.5 } }
+      { text: "先评估自己有没有能力帮，再决定", scores: { Rationality: 2, Discipline: 1 } },
+      { text: "尽量帮，不想让人失望", scores: { Empathy: 2, Social: 1 } },
+      { text: "看关系远近，关系好才帮", scores: { Social: 1, Idealism: 0 } },
+      { text: "看对自己有没有好处，再决定", scores: { Rationality: 1, Boldness: 0 } }
     ]
   },
   {
     id: 30,
-    text: "你对‘加班’的真实态度是？",
+    text: "你更喜欢用什么方式表达自己？",
     options: [
-      { text: "只要能解决那个迷人的技术难题，熬通宵也值得", effects: { Rationality: 0.4, Boldness: 0.2, Discipline: 0.3 } },
-      { text: "坚决反对，工作和生活必须有明确的界限", effects: { Social: 0.3, Discipline: -0.3, Rationality: 0.2 } },
-      { text: "如果是为了团队的共同目标，我会带头留下来", effects: { Social: 0.4, Discipline: 0.5, Empathy: 0.3 } },
-      { text: "效率低的人才需要加班，我通常能准时下班", effects: { Rationality: 0.5, Discipline: 0.2, Social: -0.2 } }
+      { text: "用语言直接表达，清晰明了", scores: { Boldness: 1, Social: 1 } },
+      { text: "用行动证明，少说多做", scores: { Discipline: 2, Rationality: 1 } },
+      { text: "用文字或艺术形式，含蓄表达", scores: { Idealism: 2, Empathy: 1 } },
+      { text: "看场合，灵活选择方式", scores: { Rationality: 1, Social: 1 } }
     ]
   },
   {
     id: 31,
-    text: "如果你的任务需要你伪装成一名服务生去接近目标，你会？",
+    text: "你更在意别人的什么？",
     options: [
-      { text: "花大量时间研究服务礼仪，确保每一个动作都完美无缺", effects: { Discipline: 0.5, Rationality: 0.4, Boldness: -0.1 } },
-      { text: "凭借直觉和临场发挥，用幽默和魅力轻松混入", effects: { Boldness: 0.4, Social: 0.5, Rationality: -0.2 } },
-      { text: "感到极度不适，认为这种‘琐事’有损我的专业身份", effects: { Rationality: 0.3, Social: -0.4, Boldness: -0.3 } },
-      { text: "这很有趣，我把它当成一场真人角色扮演游戏", effects: { Boldness: 0.4, Social: 0.3, Idealism: 0.2 } }
+      { text: "是否真诚，有没有骗我", scores: { Idealism: 2, Empathy: 1 } },
+      { text: "是否有用，能不能帮到我", scores: { Rationality: 2, Social: 0 } },
+      { text: "是否尊重我，态度好不好", scores: { Social: 1, Empathy: 1 } },
+      { text: "是否有趣，能不能聊得来", scores: { Boldness: 1, Social: 1 } }
     ]
   },
   {
     id: 32,
-    text: "面对失败，你的第一反应通常是？",
+    text: "当你在群体中时，你更倾向于？",
     options: [
-      { text: "立刻寻找客观原因和数据偏差，进行严谨的复盘", effects: { Rationality: 0.5, Discipline: 0.4, Social: -0.2 } },
-      { text: "陷入深深的自我怀疑，需要很长时间才能恢复", effects: { Empathy: 0.4, Idealism: 0.2, Boldness: -0.4 } },
-      { text: "一笑置之，认为这只是成功路上的一场游戏关卡", effects: { Boldness: 0.4, Social: 0.2, Rationality: -0.2 } },
-      { text: "愤怒地想要立刻再试一次，一定要赢回来", effects: { Boldness: 0.5, Discipline: 0.2, Rationality: -0.3 } }
+      { text: "融入大家，和谐相处", scores: { Social: 2, Empathy: 1 } },
+      { text: "保持独立，有自己的节奏", scores: { Boldness: 1, Social: -1 } },
+      { text: "观察全局，掌握整体情况", scores: { Rationality: 2, Social: 0 } },
+      { text: "带领方向，让大家一起行动", scores: { Boldness: 2, Social: 1 } }
     ]
   },
+
+  // ==========================================
+  // 【第三部分】工作态度与决策风格 (33-48)
+  // ==========================================
   {
     id: 33,
-    text: "你认为‘正义’是什么？",
+    text: "面对一个复杂的工作任务，你会？",
     options: [
-      { text: "正义是程序与规则的严格执行，不偏不倚", effects: { Discipline: 0.5, Rationality: 0.4, Idealism: -0.2 } },
-      { text: "正义是为那些被遗忘、被压迫的人争取更好的生活", effects: { Idealism: 0.5, Empathy: 0.4, Social: 0.3 } },
-      { text: "正义是揭开被掩盖的真相，哪怕真相极其残酷", effects: { Rationality: 0.4, Boldness: 0.4, Idealism: 0.3 } },
-      { text: "正义是一种主观的信念，只要问心无愧即可", effects: { Idealism: 0.4, Empathy: 0.3, Boldness: 0.2 } }
+      { text: "拆解成小步骤，按计划一步步完成", scores: { Discipline: 2, Rationality: 1 } },
+      { text: "先做起来，遇到问题再调整", scores: { Boldness: 2, Discipline: -1 } },
+      { text: "找别人帮忙，一起解决", scores: { Social: 2, Empathy: 1 } },
+      { text: "思考有没有更好的方法或思路", scores: { Idealism: 1, Rationality: 1 } }
     ]
   },
   {
     id: 34,
-    text: "在团队合作中，你最不能忍受哪种队友？",
+    text: "你更倾向于什么样的工作方式？",
     options: [
-      { text: "逻辑混乱、做事毫无条理的家伙", effects: { Rationality: 0.5, Discipline: 0.4, Social: -0.3 } },
-      { text: "冷漠无情、完全不顾及同伴感受的人", effects: { Empathy: 0.5, Social: 0.4, Rationality: -0.2 } },
-      { text: "畏首畏尾、不敢承担任何风险的胆小鬼", effects: { Boldness: 0.5, Discipline: 0.2, Rationality: 0.1 } },
-      { text: "死板教条、完全不懂得变通的木头人", effects: { Boldness: 0.4, Social: 0.3, Discipline: -0.4 } }
+      { text: "按流程和规则来，稳步推进", scores: { Discipline: 2, Rationality: 1 } },
+      { text: "灵活应变，随时调整方向", scores: { Boldness: 2, Discipline: -1 } },
+      { text: "和团队配合，共同完成目标", scores: { Social: 2, Empathy: 1 } },
+      { text: "追求创新，想出独特的解决方案", scores: { Idealism: 2, Boldness: 1 } }
     ]
   },
   {
     id: 35,
-    text: "当你需要向大众公布一个坏消息时，你会选择？",
+    text: "当你和上级意见不合时，你会？",
     options: [
-      { text: "尽可能温和、委婉，加入大量的人文关怀和希望", effects: { Empathy: 0.5, Social: 0.4, Rationality: -0.1 } },
-      { text: "直截了当、不带感情地陈述事实，避免产生歧义", effects: { Rationality: 0.5, Discipline: 0.4, Empathy: -0.3 } },
-      { text: "通过精心编排的视觉展示或艺术形式来传达", effects: { Idealism: 0.3, Social: 0.3, Boldness: 0.2 } },
-      { text: "只告诉那些‘有权知道’的人，避免引发群体恐慌", effects: { Rationality: 0.4, Boldness: -0.2, Discipline: 0.3 } }
+      { text: "按上级说的做，保留自己的看法", scores: { Discipline: 2, Social: 1 } },
+      { text: "找机会表达，尝试说服上级", scores: { Boldness: 2, Rationality: 1 } },
+      { text: "先执行看看，结果会说话", scores: { Rationality: 1, Discipline: 1 } },
+      { text: "问清楚为什么，了解上级的考量", scores: { Empathy: 1, Rationality: 1 } }
     ]
   },
   {
     id: 36,
-    text: "如果你能改写组织的信条，你会加入哪一句话？",
+    text: "你更喜欢什么样的任务？",
     options: [
-      { text: "‘数据是唯一的信仰。’", effects: { Rationality: 0.5, Discipline: 0.3, Empathy: -0.4 } },
-      { text: "‘每一个生命都不可被计算。’", effects: { Empathy: 0.5, Idealism: 0.4, Social: 0.3 } },
-      { text: "‘唯有突破，方见未来。’", effects: { Boldness: 0.5, Idealism: 0.3, Discipline: -0.2 } },
-      { text: "‘守护是最终的归宿。’", effects: { Discipline: 0.4, Idealism: 0.4, Empathy: 0.3 } }
+      { text: "有明确目标和流程的，执行就好", scores: { Discipline: 2, Rationality: 1 } },
+      { text: "有挑战性的，需要动脑筋解决", scores: { Boldness: 2, Rationality: 1 } },
+      { text: "能帮助别人的，体现自己价值", scores: { Empathy: 2, Idealism: 1 } },
+      { text: "有创意空间的，可以自由发挥", scores: { Idealism: 2, Boldness: 1 } }
     ]
   },
   {
     id: 37,
-    text: "在执行任务时，你发现了一个可能对你个人有利但对组织有害的漏洞，你会？",
+    text: "当你犯错时，你会？",
     options: [
-      { text: "立刻上报并建议修补，完全不考虑个人利益", effects: { Discipline: 0.5, Rationality: 0.3, Idealism: 0.4 } },
-      { text: "利用这个漏洞为自己谋取一点点合法的便利", effects: { Boldness: 0.3, Rationality: 0.2, Discipline: -0.3 } },
-      { text: "保持沉默，看看是否会有其他人发现并利用它", effects: { Rationality: 0.4, Social: -0.2, Boldness: -0.2 } },
-      { text: "利用漏洞搜集组织的秘密，作为未来博弈的筹码", effects: { Rationality: 0.5, Boldness: 0.4, Discipline: -0.5 } }
+      { text: "承认错误，立刻想办法补救", scores: { Discipline: 1, Empathy: 1 } },
+      { text: "分析原因，避免再犯", scores: { Rationality: 2, Discipline: 1 } },
+      { text: "嘴硬不想承认，但心里知道错了", scores: { Boldness: 1, Social: -1 } },
+      { text: "先看看有没有被发现再说", scores: { Rationality: 1, Discipline: -1 } }
     ]
   },
   {
     id: 38,
-    text: "你认为‘工作’对于你而言最大的意义是？",
+    text: "你更看重工作的什么方面？",
     options: [
-      { text: "实现自我价值，在专业领域达到巅峰", effects: { Rationality: 0.4, Discipline: 0.4, Boldness: 0.2 } },
-      { text: "获得稳定的报酬和地位，保障生活质量", effects: { Rationality: 0.3, Discipline: 0.3, Idealism: -0.4 } },
-      { text: "结交一群志同道合的伙伴，不再感到孤独", effects: { Social: 0.5, Empathy: 0.4, Boldness: -0.1 } },
-      { text: "为了某个崇高的目标，即使这个过程充满痛苦", effects: { Idealism: 0.5, Discipline: 0.5, Empathy: 0.2 } }
+      { text: "稳定性和安全感", scores: { Discipline: 2, Rationality: 1 } },
+      { text: "成长机会和挑战", scores: { Boldness: 2, Idealism: 1 } },
+      { text: "意义和价值感", scores: { Idealism: 2, Empathy: 1 } },
+      { text: "人际关系和氛围", scores: { Social: 2, Empathy: 1 } }
     ]
   },
   {
     id: 39,
-    text: "当你被调配到一个全新的、陌生的部门时，你会？",
+    text: "当你负责一个项目时，你会？",
     options: [
-      { text: "迅速查阅所有相关档案和规则，尽快进入角色", effects: { Discipline: 0.5, Rationality: 0.4, Boldness: -0.2 } },
-      { text: "先观察部门里的人际关系网，寻找潜在的盟友", effects: { Social: 0.5, Rationality: 0.3, Boldness: 0.1 } },
-      { text: "保持沉默和低调，直到我完全看透这里的局势", effects: { Rationality: 0.4, Social: -0.4, Boldness: -0.3 } },
-      { text: "主动组织一次部门聚餐，通过非正式方式融入", effects: { Social: 0.5, Boldness: 0.2, Empathy: 0.3 } }
+      { text: "制定详细计划，跟进每个环节", scores: { Discipline: 2, Rationality: 1 } },
+      { text: "抓大放小，关注关键节点", scores: { Rationality: 2, Boldness: 1 } },
+      { text: "充分授权，让团队成员发挥", scores: { Social: 2, Empathy: 1 } },
+      { text: "亲力亲为，确保每个细节", scores: { Discipline: 1, Empathy: 0 } }
     ]
   },
   {
     id: 40,
-    text: "如果你的职业生涯可以用一个词来形容，你希望是？",
+    text: "面对压力时，你会？",
     options: [
-      { text: "‘精准’ (Precision)", effects: { Rationality: 0.5, Discipline: 0.4, Social: -0.2 } },
-      { text: "‘奇迹’ (Miracle)", effects: { Boldness: 0.4, Idealism: 0.5, Social: 0.2 } },
-      { text: "‘守护’ (Guardianship)", effects: { Empathy: 0.5, Discipline: 0.4, Idealism: 0.3 } },
-      { text: "‘自由’ (Freedom)", effects: { Boldness: 0.5, Discipline: -0.5, Idealism: 0.4 } }
+      { text: "制定计划，一步步解决", scores: { Discipline: 2, Rationality: 1 } },
+      { text: "找朋友倾诉，释放情绪", scores: { Social: 2, Empathy: 1 } },
+      { text: "暂时逃避，放松再说", scores: { Boldness: 1, Discipline: -1 } },
+      { text: "思考问题的本质，寻找根本解法", scores: { Rationality: 2, Idealism: 1 } }
     ]
   },
-
-  // --- 冲突/危机 (41-60) ---
   {
     id: 41,
-    text: "你被敌方包围，且能源即将耗尽，你最可能采取的行动是？",
+    text: "你更喜欢什么样的同事？",
     options: [
-      { text: "开启自爆程序，与敌人同归于尽，捍卫最后尊严", effects: { Boldness: 0.5, Idealism: 0.4, Rationality: -0.3 } },
-      { text: "利用最后一点能源发出加密求救信号，并寻找掩体隐蔽", effects: { Rationality: 0.4, Discipline: 0.3, Boldness: -0.2 } },
-      { text: "试图与对方谈判，利用信息差寻找生还的可能", effects: { Rationality: 0.5, Boldness: 0.3, Social: 0.2 } },
-      { text: "放下武器投降，认为活着才有翻盘的机会", effects: { Rationality: 0.2, Boldness: -0.4, Discipline: -0.3 } }
+      { text: "专业能力强，做事靠谱", scores: { Rationality: 2, Discipline: 1 } },
+      { text: "性格好，相处愉快", scores: { Social: 2, Empathy: 1 } },
+      { text: "有想法，能激发灵感", scores: { Idealism: 2, Boldness: 1 } },
+      { text: "有行动力，执行力强", scores: { Boldness: 2, Discipline: 1 } }
     ]
   },
   {
     id: 42,
-    text: "你最亲密的伙伴突然被指控为叛徒，证据确凿，你会？",
+    text: "当你发现同事的问题时，你会？",
     options: [
-      { text: "坚决不信，哪怕违抗命令也要亲自查明真相", effects: { Idealism: 0.5, Empathy: 0.5, Discipline: -0.5 } },
-      { text: "在法律和程序范围内为对方寻找辩护的可能", effects: { Discipline: 0.4, Rationality: 0.4, Social: 0.2 } },
-      { text: "虽然心痛，但选择相信组织的判断，与其划清界限", effects: { Discipline: 0.5, Rationality: 0.3, Empathy: -0.4 } },
-      { text: "利用与对方的亲密关系，诱导其说出真实的动机", effects: { Rationality: 0.5, Boldness: 0.2, Empathy: -0.3 } }
+      { text: "直接指出，帮助他改进", scores: { Boldness: 1, Empathy: 1 } },
+      { text: "私下提醒，给他留面子", scores: { Empathy: 2, Social: 1 } },
+      { text: "看情况，严重了再介入", scores: { Rationality: 1, Discipline: 1 } },
+      { text: "不管，又不是我的事", scores: { Social: -1, Discipline: 0 } }
     ]
   },
   {
     id: 43,
-    text: "城市中爆发了未知的‘崩溃症’疫情，民众陷入恐慌，你会？",
+    text: "你更倾向于如何学习新知识？",
     options: [
-      { text: "深入最危险的隔离区，进行实地数据采集与研究", effects: { Rationality: 0.5, Boldness: 0.4, Discipline: 0.3 } },
-      { text: "通过广播和媒体安抚民众情绪，维持社会基本秩序", effects: { Social: 0.5, Empathy: 0.4, Discipline: 0.4 } },
-      { text: "利用自己的特殊身份，优先保护身边的家人和朋友", effects: { Empathy: 0.5, Social: 0.2, Rationality: -0.2 } },
-      { text: "质疑政府的应对措施，并在地下组织中寻找替代方案", effects: { Boldness: 0.4, Idealism: 0.5, Discipline: -0.4 } }
+      { text: "系统学习，打好基础", scores: { Discipline: 2, Rationality: 1 } },
+      { text: "实践出真知，边做边学", scores: { Boldness: 2, Rationality: -1 } },
+      { text: "向有经验的人请教", scores: { Social: 2, Empathy: 1 } },
+      { text: "自己探索，找到独特方法", scores: { Idealism: 2, Boldness: 1 } }
     ]
   },
   {
     id: 44,
-    text: "在一次撤退行动中，一个无辜的孩子被困在火海，救他会耽误整个小队的撤退，你会？",
+    text: "当你取得成绩时，你更倾向于？",
     options: [
-      { text: "冲进火海救人，我认为生命没有高低贵贱之分", effects: { Empathy: 0.5, Idealism: 0.5, Boldness: 0.4 } },
-      { text: "理智地阻止想要救人的队友，确保小队安全是第一位", effects: { Rationality: 0.5, Discipline: 0.5, Empathy: -0.5 } },
-      { text: "利用远程技术或机器人尝试营救，哪怕成功率极低", effects: { Rationality: 0.4, Boldness: 0.2, Idealism: 0.3 } },
-      { text: "陷入剧烈的心理挣扎，直到时间耗尽无法做出选择", effects: { Empathy: 0.3, Boldness: -0.4, Rationality: -0.2 } }
+      { text: "低调继续，不张扬", scores: { Discipline: 2, Rationality: 1 } },
+      { text: "分享喜悦，感谢帮助过你的人", scores: { Social: 2, Empathy: 1 } },
+      { text: "总结经验，为下次做准备", scores: { Rationality: 1, Discipline: 1 } },
+      { text: "奖励自己，享受成果", scores: { Boldness: 1, Idealism: 1 } }
     ]
   },
   {
     id: 45,
-    text: "你发现一个你一直以来视为‘英雄’的人其实有着非常阴暗的过去，你会？",
+    text: "你更喜欢什么样的领导风格？",
     options: [
-      { text: "幻灭感爆棚，从此不再相信任何所谓的英雄", effects: { Idealism: -0.5, Empathy: -0.3, Rationality: 0.2 } },
-      { text: "认为人是复杂的，只要他现在的行为是正义的即可", effects: { Rationality: 0.4, Empathy: 0.3, Discipline: 0.2 } },
-      { text: "深入挖掘那段阴暗过去，试图理解其转变的原因", effects: { Rationality: 0.5, Idealism: 0.3, Social: -0.1 } },
-      { text: "将真相公之于众，认为大众有权知道偶像的真面目", effects: { Boldness: 0.4, Discipline: 0.3, Idealism: 0.4 } }
+      { text: "明确目标，给足够自主权", scores: { Boldness: 1, Social: 1 } },
+      { text: "以身作则，一起干活", scores: { Discipline: 1, Empathy: 1 } },
+      { text: "关注员工发展，提供支持", scores: { Empathy: 2, Social: 1 } },
+      { text: "决策果断，效率至上", scores: { Rationality: 2, Boldness: 1 } }
     ]
   },
   {
     id: 46,
-    text: "当你陷入一个无法逃脱的循环梦境时，你会？",
+    text: "当你对工作感到倦怠时，你会？",
     options: [
-      { text: "冷静地记录梦境中的每一个细节，寻找逻辑漏洞", effects: { Rationality: 0.5, Discipline: 0.4, Boldness: -0.2 } },
-      { text: "顺应梦境，在其中开启一段完全不同的人生冒险", effects: { Boldness: 0.4, Social: 0.2, Idealism: 0.3 } },
-      { text: "感到极度恐惧，不断尝试用极端的痛苦让自己醒来", effects: { Boldness: 0.3, Empathy: 0.2, Rationality: -0.4 } },
-      { text: "寻找梦境中的其他‘觉醒者’，共同商讨对策", effects: { Social: 0.5, Rationality: 0.3, Boldness: 0.1 } }
+      { text: "调整节奏，给自己充电的时间", scores: { Empathy: 1, Discipline: 1 } },
+      { text: "寻找新的挑战，重新激发热情", scores: { Boldness: 2, Idealism: 1 } },
+      { text: "和同事聊聊，看看别人的看法", scores: { Social: 2, Empathy: 1 } },
+      { text: "分析原因，从根本解决问题", scores: { Rationality: 2, Discipline: 1 } }
     ]
   },
   {
     id: 47,
-    text: "面对敌人的劝降信，里面提到了你最渴望得到的某种东西，你会？",
+    text: "你更倾向于如何做长期规划？",
     options: [
-      { text: "嗤之以鼻，认为这是对我的侮辱", effects: { Discipline: 0.5, Idealism: 0.4, Boldness: 0.2 } },
-      { text: "心动一秒，但理智告诉我这很可能是陷阱", effects: { Rationality: 0.5, Discipline: 0.3, Boldness: -0.1 } },
-      { text: "将计就计，假装投降以渗透进对方内部", effects: { Boldness: 0.5, Rationality: 0.4, Discipline: -0.3 } },
-      { text: "反思组织是否真的没能满足我的需求，产生动摇", effects: { Empathy: 0.3, Idealism: -0.3, Social: 0.2 } }
+      { text: "制定详细目标，分阶段实现", scores: { Discipline: 2, Rationality: 1 } },
+      { text: "有个大致方向，灵活调整", scores: { Boldness: 1, Idealism: 1 } },
+      { text: "随缘，船到桥头自然直", scores: { Boldness: -1, Empathy: 1 } },
+      { text: "和重要的人讨论，共同决定", scores: { Social: 2, Empathy: 1 } }
     ]
   },
   {
     id: 48,
-    text: "你的秘密基地被发现并遭到了破坏，你第一反应是？",
+    text: "当你面对多个任务时，你会？",
     options: [
-      { text: "立刻转移所有核心数据，并设置多重假线索误导敌人", effects: { Rationality: 0.5, Discipline: 0.4, Boldness: 0.1 } },
-      { text: "极度愤怒，发誓一定要让破坏者付出血的代价", effects: { Boldness: 0.5, Empathy: -0.2, Rationality: -0.3 } },
-      { text: "感到深深的失落，那是唯一能让我感到安心的地方", effects: { Empathy: 0.5, Social: -0.4, Boldness: -0.3 } },
-      { text: "在废墟中寻找是否有任何幸存的伙伴或回忆", effects: { Empathy: 0.4, Social: 0.3, Idealism: 0.2 } }
+      { text: "按重要程度排序，先做紧急的", scores: { Rationality: 2, Discipline: 1 } },
+      { text: "同时推进，提高效率", scores: { Boldness: 1, Discipline: 0 } },
+      { text: "一件一件来，确保质量", scores: { Discipline: 2, Rationality: 1 } },
+      { text: "求助他人，一起完成", scores: { Social: 2, Empathy: 1 } }
     ]
   },
+
+  // ==========================================
+  // 【第四部分】价值观与人生态度 (49-64)
+  // ==========================================
   {
     id: 49,
-    text: "在一次辩论中，你发现自己的观点明显是错的，你会？",
+    text: "你更认同以下哪种人生态度？",
     options: [
-      { text: "坦然承认错误，并向对方请教正确的观点", effects: { Rationality: 0.5, Discipline: 0.4, Social: 0.3 } },
-      { text: "利用辩论技巧强行诡辩，绝不当众丢面子", effects: { Boldness: 0.4, Rationality: 0.2, Social: -0.2 } },
-      { text: "迅速转换话题，将焦点引向对方的逻辑漏洞", effects: { Rationality: 0.4, Boldness: 0.3, Social: 0.1 } },
-      { text: "沉默不语，在心里默默记下这次教训", effects: { Rationality: 0.3, Discipline: 0.5, Social: -0.4 } }
+      { text: "活在当下，享受过程", scores: { Boldness: 1, Empathy: 1 } },
+      { text: "目标导向，追求结果", scores: { Rationality: 2, Discipline: 1 } },
+      { text: "顺其自然，接受安排", scores: { Idealism: 1, Discipline: -1 } },
+      { text: "帮助他人，实现价值", scores: { Empathy: 2, Idealism: 1 } }
     ]
   },
   {
     id: 50,
-    text: "如果世界末日即将来临，最后三分钟你会做什么？",
+    text: "你更看重什么品质？",
     options: [
-      { text: "坐在电脑前，完成最后一行代码或数据上传", effects: { Rationality: 0.5, Discipline: 0.5, Social: -0.3 } },
-      { text: "紧紧拥抱身边的人，告诉他们我爱他们", effects: { Empathy: 0.5, Social: 0.5, Boldness: 0.1 } },
-      { text: "点上一支烟或喝杯好茶，平静地注视远方的毁灭", effects: { Rationality: 0.3, Discipline: 0.4, Boldness: -0.2 } },
-      { text: "大声歌唱或呐喊，用最狂放的方式告别世界", effects: { Boldness: 0.5, Idealism: 0.4, Rationality: -0.3 } }
+      { text: "诚实守信，说到做到", scores: { Discipline: 2, Idealism: 1 } },
+      { text: "聪明机智，解决问题", scores: { Rationality: 2, Boldness: 1 } },
+      { text: "善良温暖，关心他人", scores: { Empathy: 2, Social: 1 } },
+      { text: "勇敢果断，敢于行动", scores: { Boldness: 2, Discipline: 1 } }
     ]
   },
   {
     id: 51,
-    text: "你被指派去刺杀一名你认为并不该死的人，你会？",
+    text: "面对失败，你会？",
     options: [
-      { text: "抗命，哪怕被处死也不执行", effects: { Idealism: 0.5, Discipline: -0.5, Boldness: 0.5 } },
-      { text: "寻找目标身上的罪证，说服自己对方死有余辜", effects: { Rationality: 0.4, Discipline: 0.4, Empathy: -0.3 } },
-      { text: "制造假死现场，放走目标并承担随后的风险", effects: { Boldness: 0.4, Idealism: 0.4, Empathy: 0.4 } },
-      { text: "执行任务，认为个人的道德感不能高于组织的意志", effects: { Discipline: 0.5, Rationality: 0.3, Empathy: -0.5 } }
+      { text: "总结教训，重新尝试", scores: { Discipline: 2, Rationality: 1 } },
+      { text: "换个方向，也许不适合自己", scores: { Boldness: 1, Idealism: 1 } },
+      { text: "找人倾诉，释放情绪", scores: { Social: 1, Empathy: 1 } },
+      { text: "接受它，人生总有起落", scores: { Idealism: 1, Rationality: 0 } }
     ]
   },
   {
     id: 52,
-    text: "面对网络上对你铺天盖地的污蔑，你会？",
+    text: "你更相信什么？",
     options: [
-      { text: "逐条批驳，用详尽的事实和证据打脸造谣者", effects: { Rationality: 0.5, Boldness: 0.3, Discipline: 0.4 } },
-      { text: "完全不在意，认为清者自清，没必要解释", effects: { Rationality: 0.4, Social: -0.4, Boldness: -0.2 } },
-      { text: "感到极度委屈，把自己关在房间里大哭一场", effects: { Empathy: 0.4, Idealism: 0.2, Social: -0.3 } },
-      { text: "利用技术手段反向追踪造谣者的身份并进行反击", effects: { Rationality: 0.5, Boldness: 0.4, Discipline: -0.3 } }
+      { text: "自己的能力和努力", scores: { Boldness: 2, Discipline: 1 } },
+      { text: "数据和事实", scores: { Rationality: 2, Discipline: 1 } },
+      { text: "缘分和命运", scores: { Idealism: 1, Empathy: 1 } },
+      { text: "人心和感情", scores: { Empathy: 2, Social: 1 } }
     ]
   },
   {
     id: 53,
-    text: "你最害怕的事情是？",
+    text: "你更倾向于追求什么？",
     options: [
-      { text: "失去理智，变成一个受本能支配的怪物", effects: { Rationality: 0.5, Discipline: 0.4, Boldness: -0.2 } },
-      { text: "被所有人遗忘，仿佛从未在这个世界上存在过", effects: { Social: 0.5, Empathy: 0.4, Idealism: 0.3 } },
-      { text: "自己拼命守护的东西，原来是一场巨大的骗局", effects: { Idealism: 0.5, Rationality: 0.3, Empathy: 0.2 } },
-      { text: "平庸无奇地度过一生，没有任何波澜", effects: { Boldness: 0.5, Idealism: 0.3, Discipline: -0.4 } }
+      { text: "个人成就，证明自己", scores: { Boldness: 2, Rationality: 1 } },
+      { text: "内心平静，过好每一天", scores: { Idealism: 1, Empathy: 1 } },
+      { text: "帮助他人，回馈社会", scores: { Empathy: 2, Idealism: 1 } },
+      { text: "知识和智慧，不断成长", scores: { Rationality: 2, Idealism: 1 } }
     ]
   },
   {
     id: 54,
-    text: "如果你可以复活一个人，你会选？",
+    text: "你更认同哪种处世哲学？",
     options: [
-      { text: "曾经指引我前行的导师或亲人", effects: { Empathy: 0.5, Idealism: 0.4, Discipline: 0.3 } },
-      { text: "一位伟大的、能改变世界进程的天才科学家", effects: { Rationality: 0.5, Idealism: 0.4, Boldness: 0.2 } },
-      { text: "因我的失误而牺牲的战友", effects: { Empathy: 0.5, Social: 0.3, Discipline: 0.4 } },
-      { text: "不会复活任何人，死者应该安息，不应被打扰", effects: { Rationality: 0.4, Discipline: 0.5, Idealism: -0.3 } }
+      { text: "害人之心不可有，防人之心不可无", scores: { Rationality: 1, Discipline: 1 } },
+      { text: "以诚待人，问心无愧", scores: { Idealism: 2, Empathy: 1 } },
+      { text: "人不为己，天诛地灭", scores: { Rationality: 1, Boldness: 0 } },
+      { text: "及时行乐，活在当下", scores: { Boldness: 2, Discipline: -1 } }
     ]
   },
   {
     id: 55,
-    text: "在审讯室里，你和敌人单独相处，对方突然提出了一个诱人的交易，你会？",
+    text: "面对道德困境，你会？",
     options: [
-      { text: "保持沉默，一个字都不说", effects: { Discipline: 0.5, Rationality: 0.3, Social: -0.2 } },
-      { text: "通过假装感兴趣来套取更多对方背后的情报", effects: { Rationality: 0.5, Boldness: 0.4, Discipline: -0.1 } },
-      { text: "愤怒地斥责对方，以此来坚定自己的立场", effects: { Boldness: 0.3, Idealism: 0.4, Discipline: 0.2 } },
-      { text: "冷静地分析交易的可行性，看看是否真的双赢", effects: { Rationality: 0.5, Idealism: -0.3, Boldness: 0.2 } }
+      { text: "遵守规则，不做违背原则的事", scores: { Discipline: 2, Idealism: 1 } },
+      { text: "具体情况具体分析，灵活处理", scores: { Rationality: 2, Boldness: 1 } },
+      { text: "跟随内心，做认为对的事", scores: { Boldness: 2, Idealism: 1 } },
+      { text: "考虑所有人的感受，寻求平衡", scores: { Empathy: 2, Social: 1 } }
     ]
   },
   {
     id: 56,
-    text: "你发现自己的弦能（能量）出现了不稳定的波动，你会？",
+    text: "你更看重外在还是内在？",
     options: [
-      { text: "立刻停止一切行动，寻找专业人士进行精密修复", effects: { Rationality: 0.4, Discipline: 0.5, Boldness: -0.3 } },
-      { text: "试图通过自己的意志力来强行压制和掌控它", effects: { Boldness: 0.5, Discipline: 0.4, Rationality: 0.1 } },
-      { text: "隐瞒伤情，继续执行任务，不想让伙伴们担心", effects: { Empathy: 0.5, Social: 0.3, Boldness: 0.2 } },
-      { text: "观察这种波动是否能带来某种意想不到的新能力", effects: { Rationality: 0.3, Boldness: 0.4, Discipline: -0.3 } }
+      { text: "内在更重要，外在会随时间改变", scores: { Idealism: 2, Empathy: 1 } },
+      { text: "外在是名片，不能忽视", scores: { Social: 1, Rationality: 1 } },
+      { text: "都重要，内外兼修", scores: { Rationality: 1, Empathy: 1 } },
+      { text: "看场合，该重视什么就重视什么", scores: { Rationality: 1, Social: 1 } }
     ]
   },
   {
     id: 57,
-    text: "当团队内部出现严重分歧时，你通常是那个？",
+    text: "你更倾向于如何定义成功？",
     options: [
-      { text: "理性的调停者，通过数据和逻辑说服双方", effects: { Rationality: 0.5, Social: 0.4, Discipline: 0.3 } },
-      { text: "坚定的主战派，认为必须立刻做出决定，哪怕是错的", effects: { Boldness: 0.5, Discipline: 0.2, Rationality: -0.1 } },
-      { text: "情感的纽带，通过化解对立情绪来达成和解", effects: { Empathy: 0.5, Social: 0.5, Boldness: -0.1 } },
-      { text: "冷眼旁观者，直到他们吵出结果我再行动", effects: { Rationality: 0.4, Social: -0.4, Boldness: -0.2 } }
+      { text: "达成目标，证明自己", scores: { Boldness: 2, Discipline: 1 } },
+      { text: "问心无愧，做正确的事", scores: { Idealism: 2, Empathy: 1 } },
+      { text: "生活幸福，平衡各方面", scores: { Empathy: 1, Discipline: 1 } },
+      { text: "影响他人，为社会做贡献", scores: { Social: 2, Idealism: 1 } }
     ]
   },
   {
     id: 58,
-    text: "如果你的过去是一本小说，你觉得书名应该是？",
+    text: "面对不确定性，你会？",
     options: [
-      { text: "《绝对零度》", effects: { Rationality: 0.5, Social: -0.5, Discipline: 0.4 } },
-      { text: "《蝴蝶的羽翼》", effects: { Idealism: 0.5, Boldness: 0.3, Empathy: 0.4 } },
-      { text: "《街头的雷鸣》", effects: { Boldness: 0.5, Social: 0.4, Discipline: -0.3 } },
-      { text: "《孤独的守望者》", effects: { Discipline: 0.5, Idealism: 0.4, Social: -0.3 } }
+      { text: "做好充分准备，降低风险", scores: { Discipline: 2, Rationality: 1 } },
+      { text: "勇敢尝试，错了再改", scores: { Boldness: 2, Discipline: -1 } },
+      { text: "顺其自然，船到桥头自然直", scores: { Idealism: 1, Boldness: -1 } },
+      { text: "找可靠的人商量，听取建议", scores: { Social: 2, Empathy: 1 } }
     ]
   },
   {
     id: 59,
-    text: "你意外获得了一个可以预见未来三秒的特殊能力，你会？",
+    text: "你更看重什么类型的自由？",
     options: [
-      { text: "将其用于战术预判，成为战场上的无敌存在", effects: { Rationality: 0.5, Discipline: 0.4, Boldness: 0.2 } },
-      { text: "在赌场或交易市场中迅速积累财富", effects: { Rationality: 0.3, Boldness: 0.3, Idealism: -0.5 } },
-      { text: "用来避免日常生活中所有尴尬或微小的失误", effects: { Discipline: 0.5, Social: 0.2, Boldness: -0.3 } },
-      { text: "这让我感到无比沉重，我宁愿做一个普通人", effects: { Idealism: 0.4, Empathy: 0.4, Rationality: -0.2 } }
+      { text: "思想自由，可以独立思考", scores: { Idealism: 2, Rationality: 1 } },
+      { text: "行动自由，想做什么就做什么", scores: { Boldness: 2, Discipline: -1 } },
+      { text: "选择自由，有选择权就好", scores: { Rationality: 1, Social: 0 } },
+      { text: "财务自由，不为钱发愁", scores: { Rationality: 1, Boldness: 0 } }
     ]
   },
   {
     id: 60,
-    text: "面对死亡，你最希望留给世界的是？",
+    text: "你更倾向于如何处理遗憾？",
     options: [
-      { text: "一段极具启发性的科研成果或理论体系", effects: { Rationality: 0.5, Discipline: 0.4, Idealism: 0.3 } },
-      { text: "一段广为流传的英雄传说或传奇故事", effects: { Boldness: 0.5, Idealism: 0.5, Social: 0.3 } },
-      { text: "几个因我的存在而过得更好的伙伴", effects: { Empathy: 0.5, Social: 0.4, Discipline: 0.2 } },
-      { text: "什么都不留下，让一切归于虚无", effects: { Rationality: 0.4, Social: -0.5, Discipline: 0.3 } }
+      { text: "吸取教训，不再犯同样的错", scores: { Rationality: 2, Discipline: 1 } },
+      { text: "接受它，人生不可能完美", scores: { Idealism: 1, Empathy: 1 } },
+      { text: "想办法弥补，减少损失", scores: { Boldness: 1, Empathy: 1 } },
+      { text: "放下它，向前看", scores: { Boldness: 1, Discipline: -1 } }
     ]
   },
-
-  // --- 道德/哲学 (61-80) ---
   {
     id: 61,
-    text: "你认为‘人性’的本质是？",
+    text: "你更认同哪种正义观？",
     options: [
-      { text: "趋利避害的生物本能，可以通过代码模拟", effects: { Rationality: 0.5, Discipline: 0.3, Empathy: -0.4 } },
-      { text: "对爱与被爱的渴望，是连接彼此的唯一纽带", effects: { Empathy: 0.5, Social: 0.5, Idealism: 0.3 } },
-      { text: "永无止境的抗争与进化，充满着混乱的魅力", effects: { Boldness: 0.5, Idealism: 0.4, Discipline: -0.3 } },
-      { text: "一张白纸，取决于所处的环境与受到的教育", effects: { Rationality: 0.4, Discipline: 0.4, Idealism: 0.2 } }
+      { text: "程序正义，按规则办事", scores: { Discipline: 2, Rationality: 1 } },
+      { text: "结果正义，看最终效果", scores: { Rationality: 2, Boldness: 1 } },
+      { text: "道义正义，做问心无愧的事", scores: { Idealism: 2, Empathy: 1 } },
+      { text: "相对正义，看情况决定", scores: { Rationality: 1, Empathy: 0 } }
     ]
   },
   {
     id: 62,
-    text: "如果你可以删除全人类的一种负面情绪，你会选？",
+    text: "你更看重什么类型的知识？",
     options: [
-      { text: "‘恐惧’，让所有人都能勇敢地追求理想", effects: { Boldness: 0.5, Idealism: 0.4, Rationality: 0.1 } },
-      { text: "‘嫉妒’，减少社会中绝大部分的冲突与不公", effects: { Empathy: 0.4, Social: 0.4, Discipline: 0.3 } },
-      { text: "‘痛苦’，让世界不再有悲伤与绝望", effects: { Empathy: 0.5, Idealism: 0.5, Rationality: -0.3 } },
-      { text: "‘贪婪’，让资源分配回归到理性的轨道上", effects: { Rationality: 0.5, Discipline: 0.4, Idealism: 0.3 } }
+      { text: "实用的，能解决实际问题", scores: { Rationality: 2, Discipline: 1 } },
+      { text: "深刻的，能启发思考", scores: { Idealism: 2, Rationality: 1 } },
+      { text: "有趣的，能拓宽视野", scores: { Boldness: 1, Idealism: 1 } },
+      { text: "能帮助别人的，体现价值", scores: { Empathy: 2, Social: 1 } }
     ]
   },
   {
     id: 63,
-    text: "面对‘电车难题’（救五个人还是救一个人），你会？",
+    text: "面对传统和规则，你会？",
     options: [
-      { text: "计算价值最大化，毫不犹豫地牺牲少数救多数", effects: { Rationality: 0.5, Discipline: 0.4, Empathy: -0.5 } },
-      { text: "无法动手，认为任何生命都没有被剥夺的理由", effects: { Empathy: 0.5, Idealism: 0.5, Boldness: -0.4 } },
-      { text: "寻找破坏铁轨或让电车出轨的方法，哪怕风险极高", effects: { Boldness: 0.5, Idealism: 0.4, Rationality: 0.2 } },
-      { text: "随机选择，认为这种极端的道德选择本身就是荒谬的", effects: { Rationality: 0.3, Boldness: 0.3, Discipline: -0.4 } }
+      { text: "尊重传统，但可以适当调整", scores: { Discipline: 1, Empathy: 1 } },
+      { text: "遵守规则，这是社会的基础", scores: { Discipline: 2, Rationality: 1 } },
+      { text: "挑战传统，创造新东西", scores: { Boldness: 2, Idealism: 1 } },
+      { text: "看情况，有道理就听", scores: { Rationality: 1, Social: 0 } }
     ]
   },
   {
     id: 64,
-    text: "你认为‘孤独’是一种？",
+    text: "你更倾向于如何面对死亡？",
     options: [
-      { text: "一种必须忍受的、高效思考的状态", effects: { Rationality: 0.5, Discipline: 0.4, Social: -0.5 } },
-      { text: "一种可悲的缺陷，需要通过社交来治愈", effects: { Social: 0.5, Empathy: 0.4, Boldness: -0.2 } },
-      { text: "一种自我保护的屏障，免受外界的干扰与伤害", effects: { Social: -0.4, Rationality: 0.3, Boldness: -0.3 } },
-      { text: "一种与生俱来的浪漫，是与自己灵魂对话的机会", effects: { Idealism: 0.5, Empathy: 0.4, Social: -0.2 } }
+      { text: "珍惜活着的每一天，好好生活", scores: { Empathy: 1, Idealism: 1 } },
+      { text: "留下有意义的东西，被人记住", scores: { Idealism: 2, Social: 0 } },
+      { text: "顺其自然，这是自然规律", scores: { Rationality: 1, Idealism: 0 } },
+      { text: "活在当下，不去想它", scores: { Boldness: 1, Discipline: -1 } }
     ]
   },
+
+  // ==========================================
+  // 【第五部分】情境反应与极端选择 (65-80)
+  // ==========================================
   {
     id: 65,
-    text: "对于‘永生’，你的看法是？",
+    text: "如果你必须在两个都重要的东西之间选择，你会？",
     options: [
-      { text: "科研的终极目标，能让人类有无限时间探索宇宙", effects: { Rationality: 0.5, Idealism: 0.4, Discipline: 0.3 } },
-      { text: "一种诅咒，会让人失去对生命的敬畏与热诚", effects: { Empathy: 0.4, Idealism: 0.4, Rationality: 0.2 } },
-      { text: "必须建立在极其严苛的筛选制度下，否则会引发崩溃", effects: { Rationality: 0.4, Discipline: 0.5, Social: -0.2 } },
-      { text: "太无聊了，我更喜欢充满变数、有限而精彩的人生", effects: { Boldness: 0.5, Idealism: 0.3, Social: 0.2 } }
+      { text: "权衡利弊，选利益最大的", scores: { Rationality: 2, Discipline: 1 } },
+      { text: "跟随内心，选自己最想要的", scores: { Boldness: 2, Idealism: 1 } },
+      { text: "选对别人影响最小的", scores: { Empathy: 2, Social: 1 } },
+      { text: "两个都想要，尝试找折中方案", scores: { Rationality: 1, Social: 1 } }
     ]
   },
   {
     id: 66,
-    text: "你更倾向于相信？",
+    text: "当你发现一个秘密时，你会？",
     options: [
-      { text: "绝对的真相，无论它多么伤人", effects: { Rationality: 0.5, Discipline: 0.4, Idealism: 0.3 } },
-      { text: "温柔的谎言，只要它能给人带来希望和安慰", effects: { Empathy: 0.5, Social: 0.4, Rationality: -0.2 } },
-      { text: "真相是多维的，每个人眼中都有自己的真实", effects: { Idealism: 0.4, Rationality: 0.3, Social: 0.2 } },
-      { text: "真相并不重要，重要的是谁掌握了话语权", effects: { Rationality: 0.4, Boldness: 0.4, Discipline: -0.3 } }
+      { text: "烂在心里，不告诉任何人", scores: { Discipline: 2, Social: -1 } },
+      { text: "看情况，决定说不说", scores: { Rationality: 2, Social: 0 } },
+      { text: "和最信任的人分享", scores: { Social: 1, Empathy: 1 } },
+      { text: "看它会不会伤害别人", scores: { Empathy: 2, Rationality: 1 } }
     ]
   },
   {
     id: 67,
-    text: "你认为‘爱’是？",
+    text: "当你和重要的人发生严重分歧时，你会？",
     options: [
-      { text: "一种化学反应引发的非理性冲动", effects: { Rationality: 0.5, Discipline: 0.2, Empathy: -0.4 } },
-      { text: "一种灵魂的契合与无条件的信任", effects: { Empathy: 0.5, Idealism: 0.5, Social: 0.3 } },
-      { text: "一种互相扶持、共同成长的战友关系", effects: { Social: 0.4, Discipline: 0.4, Rationality: 0.3 } },
-      { text: "一种深沉的、不计回报的默默守护", effects: { Empathy: 0.5, Discipline: 0.5, Idealism: 0.4 } }
+      { text: "坚持立场，不轻易妥协", scores: { Boldness: 2, Discipline: 1 } },
+      { text: "理解对方，寻求共识", scores: { Empathy: 2, Rationality: 1 } },
+      { text: "暂时冷静，之后再谈", scores: { Discipline: 2, Social: 0 } },
+      { text: "找第三方调解", scores: { Social: 2, Rationality: 1 } }
     ]
   },
   {
     id: 68,
-    text: "如果你的克隆人出现在你面前，声称他才是‘真正的你’，你会？",
+    text: "当你面对一个艰难的决定时，你会？",
     options: [
-      { text: "通过基因比对和记忆追溯进行严密的身份核实", effects: { Rationality: 0.5, Discipline: 0.4, Boldness: -0.1 } },
-      { text: "感到极度冒犯，试图立刻将其消灭以维护唯一性", effects: { Boldness: 0.5, Empathy: -0.3, Rationality: -0.2 } },
-      { text: "与他深入交谈，看看我们是否能成为彼此最完美的搭档", effects: { Social: 0.4, Empathy: 0.4, Rationality: 0.3 } },
-      { text: "这很有趣，我刚好可以退休，让他去替我工作", effects: { Boldness: 0.4, Discipline: -0.5, Social: 0.2 } }
+      { text: "收集信息，理性分析", scores: { Rationality: 2, Discipline: 1 } },
+      { text: "相信直觉，直接决定", scores: { Boldness: 2, Rationality: -1 } },
+      { text: "问问重要的人怎么想", scores: { Social: 2, Empathy: 1 } },
+      { text: "思考长远影响再做决定", scores: { Idealism: 2, Rationality: 1 } }
     ]
   },
   {
     id: 69,
-    text: "对于‘轮回计划’，你的核心立场是？",
+    text: "当你发现自己在某个领域不如别人时，你会？",
     options: [
-      { text: "科学的必经之路，是人类生存的新纪元", effects: { Rationality: 0.5, Discipline: 0.4, Idealism: 0.3 } },
-      { text: "反人性的暴政，剥夺了人类真实死亡和痛苦的权利", effects: { Idealism: 0.5, Empathy: 0.4, Boldness: 0.4 } },
-      { text: "一种技术上的妥协，需要不断优化伦理规则", effects: { Rationality: 0.4, Discipline: 0.3, Social: 0.2 } },
-      { text: "我只关心这个计划是否能救回我重要的人", effects: { Empathy: 0.5, Social: 0.2, Rationality: -0.3 } }
+      { text: "加倍努力，超过他", scores: { Boldness: 2, Discipline: 1 } },
+      { text: "接受它，找自己擅长的", scores: { Idealism: 1, Rationality: 1 } },
+      { text: "学习他的优点，提升自己", scores: { Rationality: 1, Discipline: 1 } },
+      { text: "不在意，各有各的路", scores: { Social: 0, Empathy: 1 } }
     ]
   },
   {
     id: 70,
-    text: "你认为‘天才’和‘疯子’的区别在于？",
+    text: "当你需要做出牺牲时，你会？",
     options: [
-      { text: "逻辑的自洽性，天才的疯狂是有理可循的", effects: { Rationality: 0.5, Discipline: 0.4, Boldness: 0.1 } },
-      { text: "社会的认可度，赢了就是天才，输了就是疯子", effects: { Rationality: 0.4, Social: 0.3, Idealism: -0.3 } },
-      { text: "对他人的影响，天才创造价值，疯子制造毁灭", effects: { Rationality: 0.3, Empathy: 0.4, Discipline: 0.3 } },
-      { text: "其实没有任何区别，都是为了触碰禁忌的边界", effects: { Boldness: 0.5, Idealism: 0.4, Discipline: -0.4 } }
+      { text: "为了重要的人，可以牺牲", scores: { Empathy: 2, Idealism: 1 } },
+      { text: "看值不值得，权衡利弊", scores: { Rationality: 2, Discipline: 1 } },
+      { text: "尽量不做牺牲，找其他办法", scores: { Boldness: 1, Discipline: 0 } },
+      { text: "看是什么程度的牺牲", scores: { Rationality: 1, Social: 0 } }
     ]
   },
   {
     id: 71,
-    text: "如果上帝是个程序员，你觉得他最失败的代码是？",
+    text: "当你面对一个强大的对手时，你会？",
     options: [
-      { text: "‘衰老’，一种低效的、缓慢折磨的内存溢出", effects: { Rationality: 0.5, Discipline: 0.4, Idealism: 0.2 } },
-      { text: "‘战争’，一种无法被修复的、死循环般的冲突逻辑", effects: { Empathy: 0.5, Social: 0.3, Rationality: 0.3 } },
-      { text: "‘自我意识’，一种让程序开始质疑运行环境的Bug", effects: { Rationality: 0.4, Idealism: 0.5, Boldness: 0.3 } },
-      { text: "‘随机性’，让原本完美的规划变得一团糟", effects: { Discipline: 0.5, Rationality: 0.4, Boldness: -0.4 } }
+      { text: "正面挑战，不退缩", scores: { Boldness: 2, Discipline: 1 } },
+      { text: "分析弱点，以智取胜", scores: { Rationality: 2, Boldness: 1 } },
+      { text: "联合其他力量，一起对抗", scores: { Social: 2, Empathy: 1 } },
+      { text: "暂时退避，积累力量再说", scores: { Rationality: 1, Discipline: 1 } }
     ]
   },
   {
     id: 72,
-    text: "你如何定义‘英雄’？",
+    text: "当你发现一个机会时，你会？",
     options: [
-      { text: "在绝境中依然能保持冷静并制定出完美计划的人", effects: { Rationality: 0.5, Discipline: 0.4, Boldness: 0.2 } },
-      { text: "明知不可为而为之，为了信念燃尽自己的人", effects: { Boldness: 0.5, Idealism: 0.5, Empathy: 0.4 } },
-      { text: "在日常琐事中默默付出、守护他人安宁的人", effects: { Empathy: 0.5, Social: 0.3, Discipline: 0.5 } },
-      { text: "能够打破现有体制、开创全新时代的引领者", effects: { Boldness: 0.5, Idealism: 0.4, Discipline: -0.4 } }
+      { text: "立刻抓住，马上行动", scores: { Boldness: 2, Discipline: -1 } },
+      { text: "评估风险，再决定", scores: { Rationality: 2, Discipline: 1 } },
+      { text: "告诉重要的人，一起商量", scores: { Social: 2, Empathy: 1 } },
+      { text: "思考是否符合长期目标", scores: { Idealism: 2, Rationality: 1 } }
     ]
   },
   {
     id: 73,
-    text: "如果艺术和科学必须消失一个，你会保留？",
+    text: "当你面对一个道德模糊的情况时，你会？",
     options: [
-      { text: "科学，它是文明生存和进步的硬基石", effects: { Rationality: 0.5, Discipline: 0.4, Idealism: -0.3 } },
-      { text: "艺术，它是文明之所以被称为文明的软灵魂", effects: { Empathy: 0.4, Idealism: 0.5, Social: 0.3 } },
-      { text: "两者都不能消失，没有科学的艺术是空洞的，反之亦然", effects: { Rationality: 0.4, Idealism: 0.4, Social: 0.2 } },
-      { text: "无所谓，我更在乎当下的感官体验", effects: { Boldness: 0.4, Rationality: -0.3, Discipline: -0.3 } }
+      { text: "遵守法律和规则", scores: { Discipline: 2, Rationality: 1 } },
+      { text: "看对谁有利，做利益最大的", scores: { Rationality: 2, Boldness: 0 } },
+      { text: "跟随内心，做认为对的事", scores: { Boldness: 2, Idealism: 1 } },
+      { text: "考虑所有人的感受", scores: { Empathy: 2, Social: 1 } }
     ]
   },
   {
     id: 74,
-    text: "你认为‘自由’的前提是？",
+    text: "当你需要做出长期承诺时，你会？",
     options: [
-      { text: "绝对的自律，不能掌控自己的人无法拥有自由", effects: { Discipline: 0.5, Rationality: 0.4, Boldness: -0.2 } },
-      { text: "充足的资源，贫穷和匮乏是最大的枷锁", effects: { Rationality: 0.4, Idealism: -0.3, Boldness: 0.2 } },
-      { text: "无畏的勇气，只有敢于反抗的人才配谈自由", effects: { Boldness: 0.5, Idealism: 0.4, Discipline: -0.4 } },
-      { text: "深度的理解，只有看透世界的本质才能获得精神自由", effects: { Rationality: 0.5, Idealism: 0.5, Social: -0.3 } }
+      { text: "深思熟虑，确保能做到", scores: { Rationality: 2, Discipline: 1 } },
+      { text: "看对象，值就承诺", scores: { Idealism: 1, Social: 0 } },
+      { text: "跟随内心，想就做", scores: { Boldness: 2, Idealism: 1 } },
+      { text: "先试试看，不行再说", scores: { Boldness: 1, Discipline: -1 } }
     ]
   },
   {
     id: 75,
-    text: "如果你的生命还剩下最后一天，你会？",
+    text: "当你面对一个无法改变的事实时，你会？",
     options: [
-      { text: "去完成那个一直没能解决的科学假设或艺术作品", effects: { Rationality: 0.5, Idealism: 0.4, Discipline: 0.3 } },
-      { text: "疯狂地做一些平时不敢做的、充满刺激的事情", effects: { Boldness: 0.5, Social: 0.2, Discipline: -0.5 } },
-      { text: "安静地陪在重要的人身边，感受最后的温暖", effects: { Empathy: 0.5, Social: 0.4, Discipline: 0.3 } },
-      { text: "独自一人在高处眺望落日，静候终结的到来", effects: { Rationality: 0.4, Social: -0.5, Boldness: -0.2 } }
+      { text: "接受它，继续生活", scores: { Idealism: 1, Discipline: 1 } },
+      { text: "寻找其他出路", scores: { Boldness: 2, Rationality: 1 } },
+      { text: "找支持，度过难关", scores: { Social: 2, Empathy: 1 } },
+      { text: "分析原因，避免再发生", scores: { Rationality: 2, Discipline: 1 } }
     ]
   },
   {
     id: 76,
-    text: "你认为‘历史’是由谁书写的？",
+    text: "当你面对一个两难选择时，你会？",
     options: [
-      { text: "胜利者，历史只是某种权力的叙事工具", effects: { Rationality: 0.5, Boldness: 0.3, Idealism: -0.4 } },
-      { text: "英雄，是极少数的关键人物改变了历史进程", effects: { Boldness: 0.4, Idealism: 0.5, Social: 0.2 } },
-      { text: "大众，是每一个普通人的细微行动汇聚成了洪流", effects: { Empathy: 0.4, Social: 0.5, Discipline: 0.3 } },
-      { text: "必然性，历史有其自身不可逆转的运行规律", effects: { Rationality: 0.5, Discipline: 0.5, Idealism: 0.2 } }
+      { text: "选后果可以承担的", scores: { Rationality: 2, Discipline: 1 } },
+      { text: "选让自己不后悔的", scores: { Idealism: 2, Boldness: 1 } },
+      { text: "选对别人伤害小的", scores: { Empathy: 2, Social: 1 } },
+      { text: "两个都不选，找第三个方案", scores: { Boldness: 1, Rationality: 1 } }
     ]
   },
   {
     id: 77,
-    text: "你如何看待‘谎言’？",
+    text: "当你面对一个强大的压力时，你会？",
     options: [
-      { text: "一种低效且危险的信息交换方式", effects: { Rationality: 0.5, Discipline: 0.4, Empathy: -0.3 } },
-      { text: "一种必要的生活润滑剂和情感保护色", effects: { Empathy: 0.4, Social: 0.5, Rationality: 0.2 } },
-      { text: "一种展示智慧和掌控力的博弈工具", effects: { Rationality: 0.4, Boldness: 0.4, Discipline: -0.3 } },
-      { text: "一种对真相的背叛，绝对不可容忍", effects: { Discipline: 0.5, Idealism: 0.5, Rationality: 0.3 } }
+      { text: "坚强面对，不退缩", scores: { Boldness: 2, Discipline: 1 } },
+      { text: "寻求帮助，一起解决", scores: { Social: 2, Empathy: 1 } },
+      { text: "暂时逃避，调整好再面对", scores: { Empathy: 1, Discipline: 0 } },
+      { text: "分析问题根源，解决它", scores: { Rationality: 2, Discipline: 1 } }
     ]
   },
   {
     id: 78,
-    text: "如果你能穿越回过去，你会？",
+    text: "当你面对一个不公正的情况时，你会？",
     options: [
-      { text: "纠正那个导致悲剧发生的关键错误", effects: { Empathy: 0.5, Rationality: 0.4, Discipline: 0.3 } },
-      { text: "给自己留下一笔巨额财富或核心技术资料", effects: { Rationality: 0.4, Boldness: 0.3, Idealism: -0.5 } },
-      { text: "只是静静地作为一个旁观者，感受那个时代的氛围", effects: { Idealism: 0.4, Social: -0.2, Rationality: 0.3 } },
-      { text: "不去穿越，认为过去的一切造就了现在的我", effects: { Rationality: 0.4, Discipline: 0.5, Idealism: 0.2 } }
+      { text: "站出来发声，纠正它", scores: { Boldness: 2, Idealism: 1 } },
+      { text: "按规则申诉，寻求正义", scores: { Discipline: 2, Rationality: 1 } },
+      { text: "帮助受害者，支持他们", scores: { Empathy: 2, Social: 1 } },
+      { text: "看情况，决定怎么处理", scores: { Rationality: 1, Social: 0 } }
     ]
   },
   {
     id: 79,
-    text: "你认为‘幸福’的真谛在于？",
+    text: "当你面对一个重要的机会但风险很高时，你会？",
     options: [
-      { text: "内心的平静与对自己生活的绝对掌控", effects: { Discipline: 0.5, Rationality: 0.4, Social: -0.3 } },
-      { text: "不断的挑战与战胜困难后的成就感", effects: { Boldness: 0.5, Rationality: 0.3, Discipline: 0.2 } },
-      { text: "被爱包围，并拥有能为之付出爱的人", effects: { Empathy: 0.5, Social: 0.5, Idealism: 0.3 } },
-      { text: "追求并接近那个永恒的、完美的真理", effects: { Idealism: 0.5, Rationality: 0.5, Discipline: 0.4 } }
+      { text: "评估后决定，风险可接受就做", scores: { Rationality: 2, Discipline: 1 } },
+      { text: "勇敢尝试，失败了也值得", scores: { Boldness: 2, Idealism: 1 } },
+      { text: "问问重要的人怎么想", scores: { Social: 2, Empathy: 1 } },
+      { text: "放弃，找更稳妥的机会", scores: { Discipline: 2, Boldness: -1 } }
     ]
   },
   {
     id: 80,
-    text: "如果你可以给全人类留下一句遗言，你会说？",
+    text: "当你回顾自己的人生时，你更在意什么？",
     options: [
-      { text: "‘保持理智，永不放弃思考。’", effects: { Rationality: 0.5, Discipline: 0.4, Social: -0.2 } },
-      { text: "‘去爱吧，就像从未受过伤一样。’", effects: { Empathy: 0.5, Social: 0.5, Idealism: 0.4 } },
-      { text: "‘游戏才刚刚开始。’", effects: { Boldness: 0.5, Idealism: 0.4, Social: 0.3 } },
-      { text: "‘真相就在你我之间。’", effects: { Rationality: 0.4, Idealism: 0.5, Boldness: 0.2 } }
+      { text: "做了多少有意义的事", scores: { Idealism: 2, Empathy: 1 } },
+      { text: "达成了多少目标", scores: { Boldness: 2, Discipline: 1 } },
+      { text: "有多少重要的人在身边", scores: { Social: 2, Empathy: 1 } },
+      { text: "有多少成长和收获", scores: { Rationality: 2, Discipline: 1 } }
     ]
   }
 ];
