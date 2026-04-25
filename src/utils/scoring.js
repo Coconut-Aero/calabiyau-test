@@ -1,79 +1,121 @@
+import { QUESTIONS } from './questions';
+
 /**
- * 人格匹配引擎
- * 实现权重累加、Softmax 归一化、冲突惩罚和稀有特征加权
+ * 人格匹配引擎 - 修复版
+ *
+ * 修复内容（基于数据分析）：
+ * 1. 用户向量归一化 ÷ 题目数(80)，解决量级错位问题
+ * 2. Softmax 温度 0.8 → 1.5，减弱马太效应
+ * 3. boost 权重 0.15 → 0.05，触发门槛 >0.8 → >0.9
+ * 4. 冲突惩罚系数 2.0 → 1.5，避免有负值角色被过度压制
+ * 5. 新增题目基线校正，抵消题库结构均值，确保随机作答期望值接近 0
  */
 
 export const calculateScores = (userResponses, characterVectors) => {
+  const TRAIT_KEYS = ['Rationality', 'Boldness', 'Social', 'Idealism', 'Discipline', 'Empathy'];
+  const questionMap = new Map(QUESTIONS.map(question => [question.id, question]));
+
   // 1. 初始化用户向量
-  const userVector = {
-    Rationality: 0,
-    Boldness: 0,
-    Social: 0,
-    Idealism: 0,
-    Discipline: 0,
-    Empathy: 0
-  };
+  const userRaw = Object.fromEntries(TRAIT_KEYS.map(t => [t, 0]));
+  const baselineRaw = Object.fromEntries(TRAIT_KEYS.map(t => [t, 0]));
 
   // 2. 权重累加
   userResponses.forEach(response => {
     const traits = response.scores || response.effects || {};
     Object.keys(traits).forEach(trait => {
-      userVector[trait] += traits[trait];
+      if (userRaw[trait] !== undefined) {
+        userRaw[trait] += traits[trait];
+      }
     });
+
+    const question = questionMap.get(response.id);
+    if (question) {
+      TRAIT_KEYS.forEach(trait => {
+        const total = question.options.reduce(
+          (sum, option) => sum + (option.scores?.[trait] || option.effects?.[trait] || 0),
+          0
+        );
+        baselineRaw[trait] += total / question.options.length;
+      });
+    }
   });
 
-  // 3. 计算每个角色的原始得分 (余弦相似度 + 惩罚项)
+  const centeredRaw = Object.fromEntries(
+    TRAIT_KEYS.map(trait => [trait, userRaw[trait] - baselineRaw[trait]])
+  );
+
+  // ★ 修复1：用户向量归一化（除以题目数）
+  // 原始向量量级约为 -160 ~ +160，角色向量为 -1.0 ~ +1.0
+  // 不归一化时余弦相似度计算在数值上正确，但 penalty/boost 的绝对值会失真
+  const N_QUESTIONS = userResponses.length || 80;
+  const userVector = Object.fromEntries(
+    TRAIT_KEYS.map(t => [t, centeredRaw[t] / N_QUESTIONS])
+  );
+
+  // 3. 计算每个角色的原始得分
   const rawScores = {};
   const charNames = Object.keys(characterVectors);
 
   charNames.forEach(name => {
     const charVec = characterVectors[name];
+
     let dotProduct = 0;
     let userMag = 0;
     let charMag = 0;
 
-    Object.keys(userVector).forEach(trait => {
+    TRAIT_KEYS.forEach(trait => {
       dotProduct += userVector[trait] * charVec[trait];
-      userMag += Math.pow(userVector[trait], 2);
-      charMag += Math.pow(charVec[trait], 2);
+      userMag += userVector[trait] ** 2;
+      charMag += charVec[trait] ** 2;
     });
 
     // 余弦相似度
     const similarity = dotProduct / (Math.sqrt(userMag) * Math.sqrt(charMag) || 1);
-    
-    // 冲突惩罚 (使用归一化后的 userVector)
+
+    // ★ 修复4：冲突惩罚系数 2.0 → 1.5
+    // 原 2.0 会把忧雾、玛拉等多负值角色压到几乎不可能出现
     let penalty = 0;
-    Object.keys(userVector).forEach(trait => {
+    TRAIT_KEYS.forEach(trait => {
       const normalizedUserTrait = userMag > 0 ? userVector[trait] / Math.sqrt(userMag) : 0;
-      if (Math.sign(userVector[trait]) !== Math.sign(charVec[trait]) && Math.abs(normalizedUserTrait) > 0.1) {
-        penalty += 2.0 * Math.abs(normalizedUserTrait - charVec[trait]); // 调整权重使惩罚更有效
+      if (
+        Math.sign(userVector[trait]) !== Math.sign(charVec[trait]) &&
+        Math.abs(normalizedUserTrait) > 0.1
+      ) {
+        penalty += 1.5 * Math.abs(normalizedUserTrait - charVec[trait]); // 2.0 → 1.5
       }
     });
 
-    // 稀有特征加权
+    // ★ 修复3：boost 大幅削弱，且门槛提高
+    // 原 >0.8 触发 +0.15，使蕾欧娜（全正无负）每次额外 +0.30
+    // 现 >0.9 触发 +0.05，极值特征才能获得轻微加成
     let boost = 0;
-    Object.keys(charVec).forEach(trait => {
-      if (Math.abs(charVec[trait]) > 0.8 && Math.sign(userVector[trait]) === Math.sign(charVec[trait])) {
-        boost += 0.15;
+    TRAIT_KEYS.forEach(trait => {
+      if (
+        Math.abs(charVec[trait]) > 0.9 &&                                 // 门槛 0.8 → 0.9
+        Math.sign(userVector[trait]) === Math.sign(charVec[trait])
+      ) {
+        boost += 0.05;                                                     // 0.15 → 0.05
       }
     });
 
     rawScores[name] = (similarity * 10) - penalty + boost;
   });
 
-  // 4. Softmax 归一化以拉开差距
+  // ★ 修复2：Softmax 温度 0.8 → 1.5
   return applySoftmax(rawScores);
 };
 
 function applySoftmax(scores) {
   const names = Object.keys(scores);
   const values = Object.values(scores);
-  
-  const T = 0.8; 
+
+  // T=0.8 时分差 0.5 能产生 10 倍概率差，T=1.5 时需要 ~1.8 的分差才有同等效果
+  // 提高 T 使结果更均匀，保留区分度但不至于 89% vs 8%
+  const T = 1.5;                                                           // 0.8 → 1.5
   const maxScore = Math.max(...values);
   const exps = values.map(v => Math.exp((v - maxScore) / T));
   const sumExps = exps.reduce((a, b) => a + b, 0);
-  
+
   const softmaxScores = {};
   names.forEach((name, i) => {
     softmaxScores[name] = exps[i] / sumExps;
@@ -96,11 +138,10 @@ export const getTopResults = (scores, characters, limit = 5) => {
     });
 };
 
-// 心理分析生成逻辑
+// 心理分析生成逻辑（保持原有内容不变）
 function generateAnalysis(character, score) {
   const name = character.name;
   const analyses = {
-    // 欧泊 (Opal)
     '米雪儿·李': [
       "你内心深处潜藏着一种永不熄灭的探索欲。你倾向于将生活视为一场宏大的游戏，这种视角让你在面对困境时总能发现意想不到的突破口。",
       "你不愿受陈规陋习的束缚，更倾向于用直觉和勇气去书写自己的规则。这种跳脱的思维是你最强大的武器，也是你魅力的来源。",
@@ -141,8 +182,6 @@ function generateAnalysis(character, score) {
       "你优雅且从容，善于利用环境和信息来达成目标。这种掌控力让你在处理问题时总能游刃有余。",
       "你更倾向于在幕后观察，这种缜密的思维让你能洞察事物的本质，而非表象。"
     ],
-
-    // 剪刀手 (Scissors)
     '明': [
       "你是一个充满正义感的行动派，更愿意用拳头和直觉去挑战不公。你的热情具有极强的感染力。",
       "你极度重视人际关系，街头智慧让你在处理复杂的人情世故时游刃有余。你的冲动源于对伙伴最赤诚的爱。",
@@ -171,7 +210,7 @@ function generateAnalysis(character, score) {
     '艾卡': [
       "你拥有一颗滚烫的赤子之心，对家乡和正义有着近乎偏执的守护。你的勇气源于对弱者的深度共情。",
       "你更倾向于用直觉和热情去解决问题，这种不计后果的自我牺牲倾向既是你最耀眼的光芒，也是你潜在的软肋。",
-      "你对权威保持天然的警惕，更愿意作为‘无名英雄’在暗中守护你所珍视的一切。"
+      "你对权威保持天然的警惕，更愿意作为'无名英雄'在暗中守护你所珍视的一切。"
     ],
     '珐格兰丝': [
       "你拥有极度细腻的感知力，能捕捉到空气中微小的变化与情感的流动。你的温柔中带着一种天生的科研专注力。",
@@ -183,8 +222,6 @@ function generateAnalysis(character, score) {
       "你是一个无畏的决斗者，极具天赋但也伴随着难以言说的心理创伤。你倾向于通过极致的感官刺激来填补内心的空洞。",
       "在那颗难以捉摸的心灵深处，依然保留着某种对过去生活习惯的执着，这是你与真实世界最后的纽带。"
     ],
-
-    // 乌尔比诺 (Urbino)
     '星绘': [
       "你是一个纯粹的理想主义者，拥有像星辰般温柔且广大的疗愈力。你的声望源于你对每一个受伤灵魂的深度关怀。",
       "你总是能捕捉到记忆中那些微小的、跨越时空的闪回，这种特质让你在理智中透着一种超然的文静。",

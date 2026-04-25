@@ -67,13 +67,37 @@
           </span>
           <div class="absolute inset-0 bg-gradient-to-r from-brand-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
         </button>
-        <p class="text-sm text-gray-400 font-medium">已有 1,248,390 人参与测试</p>
+        <div class="flex items-center gap-3 px-5 py-2.5 bg-white/50 backdrop-blur-md   rounded-2xl transition-all hover:bg-white/80  group cursor-default mt-2">
+          <span class="text-sm font-bold text-gray-500 tracking-wider">全网已有</span>
+          <div class="relative flex items-center justify-center p-1 rounded-lg   group-hover:scale-105 transition-transform duration-300">
+            <img 
+              src="https://moe-counter.coconut-aero.top/calabiyau:test?theme=calabiyau&length=7&render=pixelated&darkmode=auto" 
+              alt="参与人数" 
+              class="h-40 object-contain"
+            />
+          </div>
+          <span class="text-sm font-bold text-gray-500 tracking-wider">人参与测试</span>
+        </div>
       </div>
     </div>
 
     <!-- 底部版权 -->
     <div class="mt-24 text-gray-300 text-xs font-medium tracking-widest  z-10">
-      Designed by Coconut Aero with ❤️ @ 2026
+      Made With ❤  | 由 
+        <a
+          href="https://github.com/Coconut-Aero"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="font-medium text-indigo-600 dark:text-indigo-400 underline hover:opacity-90"
+        >
+          Coconut-Aero
+        </a>
+        构建 ｜  <a
+          href="https://github.com/Coconut-Aero/calabiyau-test"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="font-medium text-indigo-600 dark:text-indigo-400 underline hover:opacity-90"
+        > 项目地址 </a>
     </div>
   </div>
 </template>
