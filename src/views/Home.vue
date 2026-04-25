@@ -76,7 +76,7 @@
               class="h-40 object-contain"
             />
           </div>
-          <span class="text-sm font-bold text-gray-500 tracking-wider">人参与测试</span>
+          <span class="text-sm font-bold text-gray-500 tracking-wider">人参与测试了喵~</span>
         </div>
       </div>
     </div>
