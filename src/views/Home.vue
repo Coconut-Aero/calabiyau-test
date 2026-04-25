@@ -71,7 +71,7 @@
           <span class="text-sm font-bold text-gray-500 tracking-wider">全网已有</span>
           <div class="relative flex items-center justify-center p-1 rounded-lg   group-hover:scale-105 transition-transform duration-300">
             <img 
-              src="https://moe-counter.coconut-aero.top/calabiyau:test?theme=calabiyau&length=7&render=pixelated&darkmode=auto" 
+              src="https://moe-counter.coconut-aero.top/calabiyau:test?theme=calabiyau&length=7&render=pixelated&darkmode=light" 
               alt="参与人数" 
               class="h-40 object-contain"
             />
